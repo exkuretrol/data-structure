@@ -1,4 +1,4 @@
 pybind11
 streamlit
-./homework-0.0.1-cp311-cp311-linux_x86_64.whl; sys_platform == "linux"
-./homework-0.0.1-cp311-cp311-macosx_13_0_arm64.whl; sys_platform == "darwin"
+./dist/homework-0.0.1-cp311-cp311-linux_x86_64.whl; sys_platform == "linux"
+./dist/homework-0.0.1-cp311-cp311-macosx_13_0_arm64.whl; sys_platform == "darwin"

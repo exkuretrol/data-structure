@@ -7,15 +7,15 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(homework, m)
 {
-    py::class_<Permutation>(m, "Permutation", R"pbdoc(
-        排列類別
-    )pbdoc")
-        .def(py::init<const std::string &>(), py::arg("input"))
+    py::class_<Permutation>(m, "Permutation")
+        .def(py::init<std::string>(), py::arg("input"))
         .def(py::init<int>(), py::arg("length"))
         .def(py::init<>())
         .def("run", &Permutation::run, py::arg("k"))
+        .def("toggleTrace", &Permutation::toggleTrace)
         .def("print", &Permutation::print)
         .def("getData", &Permutation::getData);
+
     py::class_<Honai>(m, "Honai")
         .def(py::init<int>(), py::arg("layer"))
         .def("run", &Honai::run, "Execute Hanoi Tower algorithm",

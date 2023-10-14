@@ -24,10 +24,11 @@ if input_types == 'Numbers':
     input_from = st.number_input(
         "k", min_value=0, max_value=input_number - 1, value=0)
 else:
-    input_text = st.text_input("String", value="你好啊旅行者")
+    input_text = st.text_input("String", value="原神，啟動")
     input_from = st.number_input(
         "k", min_value=0, max_value=len(input_text) - 1, value=0)
 
+verbose = st.checkbox("逐步顯示", value=False)
 
 run = st.button("啟動", type="primary")
 
@@ -38,8 +39,12 @@ if run:
 
     else:
         perm = Permutation(input_text)
+    if verbose:
+        perm.toggleTrace()
     perm.run(input_from)
     ls = perm.getData()
 
-    for i, l in enumerate(ls):
-        st.write(l + f" [{i}]")
+    t = ""
+    for l in ls:
+        t = t + (l) + '\n'
+    st.code(t)

@@ -15,7 +15,8 @@ st.sidebar.markdown('''
 
 ''')
 
-input_layer = st.number_input("n", step = 1, value=3, min_value=1, max_value=10, placeholder="圓盤數")
+input_layer = st.number_input(
+    "n", step=1, value=3, min_value=1, max_value=10, placeholder="圓盤數")
 run = st.button("啟動", type="primary")
 
 if run:
@@ -23,5 +24,8 @@ if run:
     honai.run(int(input_layer))
 
     ls = honai.getData()
+    t = ""
     for i, l in enumerate(ls):
-        st.write("Step " + i + ": " + l)
+        t = t + ("Step " + str(i + 1) + ": " + l) + "\n"
+
+    st.code(t)

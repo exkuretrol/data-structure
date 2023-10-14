@@ -5,7 +5,7 @@ st.set_page_config(
     layout="centered"
 )
 
-tab0, tab1, tab2 = st.tabs(["permutation.hpp", "tower-of-honai.hpp", "main.cpp"])
+tab0, tab1, tab2 = st.tabs(["main.cpp", "permutation.hpp", "tower-of-honai.hpp"])
 
 with tab0:
     with open('src/main.cpp') as f:

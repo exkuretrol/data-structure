@@ -2,8 +2,9 @@ import streamlit as st
 st.set_page_config(
     page_title="程式碼說明",
     page_icon="🤨",
-    layout="centered"
 )
+
+st.header("程式碼說明")
 
 tab0, tab1, tab2 = st.tabs(["main.cpp", "permutation.hpp", "tower-of-honai.hpp"])
 

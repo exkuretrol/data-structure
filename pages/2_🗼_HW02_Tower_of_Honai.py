@@ -7,7 +7,15 @@ st.set_page_config(
     page_icon="🗼"
 )
 
-input_layer = st.number_input("層數", step = 1, value=3)
+st.header("河內塔")
+st.caption("Tower of Honai")
+
+st.sidebar.markdown('''
+`n`：河內塔圓盤數，如輸入 3 為三層河內塔。
+
+''')
+
+input_layer = st.number_input("n", step = 1, value=3, min_value=1, max_value=10, placeholder="圓盤數")
 run = st.button("啟動", type="primary")
 
 if run:
@@ -16,4 +24,4 @@ if run:
 
     ls = honai.getData()
     for i, l in enumerate(ls):
-        st.write(l + f" [{i}]")
+        st.write("Step " + i + ": " + l)

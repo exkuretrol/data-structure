@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <codecvt>
+#include <locale>
 using namespace std;
 
 class Permutation

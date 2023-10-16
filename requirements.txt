@@ -1,4 +1,4 @@
 pybind11
 streamlit
 homework @ git+https://github.com/exkuretrol/data-structure@main
-rcviz
+rcviz @ git+https://github.com/carlsborg/rcviz@main

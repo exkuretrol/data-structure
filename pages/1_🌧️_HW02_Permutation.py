@@ -1,5 +1,12 @@
 import streamlit as st
 from homework import Permutation
+from rcviz import callgraph, viz
+from string import ascii_uppercase, digits
+from random import choice
+from os import remove
+
+def recur_vis(text: str, start: int):
+    return filename
 
 st.set_page_config(
     page_title="排列",
@@ -32,11 +39,11 @@ verbose = st.checkbox("逐步顯示", value=False)
 
 run = st.button("啟動", type="primary")
 
+
 if run:
     ls = []
     if input_types == 'Numbers':
         perm = Permutation(input_number)
-
     else:
         perm = Permutation(input_text)
     if verbose:
@@ -47,4 +54,46 @@ if run:
     t = ""
     for l in ls:
         t = t + (l) + '\n'
-    st.code(t)
+
+    text = None
+    try:
+        input_text
+    except NameError:
+        text = "".join([ascii_uppercase[i] for i in range(input_number)])
+    else:
+        text = input_text
+
+    callgraph.reset()
+    n = len(text)
+    ls = list(text)
+    ps = list()
+    record = ""
+    @viz
+    def perm(k: int):
+        global record, ls, ps
+        if (k == n - 1):
+            perm.track(swap = record)
+            return ls
+        else:
+            for i in range(k, n):
+                record = f" ({k}, {i})"
+                ps = ls
+                print(ps)
+                ls[k], ls[i] = ls[i], ls[k]
+                perm(k + 1)
+                ls[k], ls[i] = ls[i], ls[k]
+                perm.track(pvs = ps)
+        return 0
+
+    perm(input_from)
+    filename = ''.join(choice(ascii_uppercase + digits) for i in range(10)) + ".svg"
+    callgraph.render(filename)
+
+    tab1, tab2 = st.tabs(["逐步排列", "遞迴視覺化"])
+
+    with tab1:
+        st.code(t)
+    with tab2:
+        st.image(filename)
+    remove(filename)
+    

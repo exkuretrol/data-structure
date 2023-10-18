@@ -78,7 +78,6 @@ if run:
             for i in range(k, n):
                 record = f" ({k}, {i})"
                 ps = ls
-                print(ps)
                 ls[k], ls[i] = ls[i], ls[k]
                 perm(k + 1)
                 ls[k], ls[i] = ls[i], ls[k]

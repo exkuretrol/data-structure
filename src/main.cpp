@@ -1,5 +1,6 @@
 #include "permutation.hpp"
 #include "tower-of-honai.hpp"
+#include "magic-square.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -22,4 +23,11 @@ PYBIND11_MODULE(homework, m)
              py::arg("n"), py::arg("A") = 'A', py::arg("B") = 'B', py::arg("C") = 'C')
         .def("print", &Honai::print, "Print the records")
         .def("getData", &Honai::getData, "Get the records as a list");
+
+    py::class_<MagicSquare>(m, "MagicSquare")
+        .def(py::init<int>())
+        .def(py::init<int, std::string>())
+        .def("run", &MagicSquare::run)
+        .def("print", &MagicSquare::print)
+        .def("getData", &MagicSquare::getData);
 }

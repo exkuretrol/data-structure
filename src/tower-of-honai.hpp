@@ -6,11 +6,10 @@ using namespace std;
 class Honai
 {
 private:
-    int n;
     vector<string> records;
 
 public:
-    Honai(int layer) : n(layer){};
+    Honai() {};
 
     /// @brief 三根柱子的河內塔
     /// @param n 層數
@@ -30,7 +29,7 @@ public:
     /// @brief 輸出
     void print()
     {
-        for (int i = 0; i < records.size(); i++)
+        for (int i = 0; i < static_cast<int>(records.size()); i++)
         {
             cout << records[i] << " [" << i << "]" << endl;
         }

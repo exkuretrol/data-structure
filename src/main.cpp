@@ -18,7 +18,7 @@ PYBIND11_MODULE(homework, m)
         .def("getData", &Permutation::getData);
 
     py::class_<Honai>(m, "Honai")
-        .def(py::init<int>(), py::arg("layer"))
+        .def(py::init<>())
         .def("run", &Honai::run, "Execute Hanoi Tower algorithm",
              py::arg("n"), py::arg("A") = 'A', py::arg("B") = 'B', py::arg("C") = 'C')
         .def("print", &Honai::print, "Print the records")

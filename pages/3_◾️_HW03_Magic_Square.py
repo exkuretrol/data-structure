@@ -57,4 +57,6 @@ if run:
     st.dataframe(df.style.format(precision=0).background_gradient(
         cmap=cmap, axis=None, vmin=1, vmax=size_input * size_input))
     
-    st.info(body="對角線加總為左下右上", icon="ℹ️")
+    if (direction_input == "tl" or direction_input == "br"):
+        st.info(body="對角線加總為左下右上", icon="ℹ️")
+    

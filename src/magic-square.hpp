@@ -70,10 +70,10 @@ public:
     {
         // 下一個位置
         int i, j;
-        // 位置
-        int x, y;
-        // if direction is top left or bottom right
-        if (d == tl || d == br)
+        // 預定下一個位置
+        int k, l;
+        // 如果方向是往左上或是往右上
+        if (d == tl || d == tr)
         {
             i = 0;
             j = (n - 1) / 2;
@@ -91,52 +91,52 @@ public:
         {
             switch (d)
             {
-            // top left
+            // up left
             case tl:
-                x = (i - 1 < 0) ? n - 1 : i - 1;
-                y = (j - 1 < 0) ? n - 1 : j - 1;
-                if (numPointer[x][y] > 0)
+                k = (i - 1 < 0) ? n - 1 : i - 1;
+                l = (j - 1 < 0) ? n - 1 : j - 1;
+                if (numPointer[k][l] > 0)
                     i = (i + 1) % n;
                 else
                 {
-                    i = x;
-                    j = y;
+                    i = k;
+                    j = l;
                 }
                 break;
-            // top right
+            // up right
             case tr:
-                x = (i - 1 < 0) ? n - 1 : i - 1;
-                y = (j + 1 == n) ? 0 : j + 1;
-                if (numPointer[x][y] > 0)
+                k = (i - 1 < 0) ? n - 1 : i - 1;
+                l = (j + 1 == n) ? 0 : j + 1;
+                if (numPointer[k][l] > 0)
                     i = (i + 1) % n;
                 else
                 {
-                    i = x;
-                    j = y;
+                    i = k;
+                    j = l;
                 }
                 break;
             // bottom right
             case br:
-                x = (i + 1 == n) ? 0 : i + 1;
-                y = (j + 1 == n) ? 0 : j + 1;
-                if (numPointer[x][y] > 0)
+                k = (i + 1 == n) ? 0 : i + 1;
+                l = (j + 1 == n) ? 0 : j + 1;
+                if (numPointer[k][l] > 0)
                     i = (i - 1 < 0) ? n - 1 : i - 1;
                 else
                 {
-                    i = x;
-                    j = y;
+                    i = k;
+                    j = l;
                 }
                 break;
             // bottom left
             case bl:
-                x = (i + 1 == n) ? 0 : i + 1;
-                y = (j - 1 < 0) ? n - 1 : j - 1;
-                if (numPointer[x][y] > 0)
+                k = (i + 1 == n) ? 0 : i + 1;
+                l = (j - 1 < 0) ? n - 1 : j - 1;
+                if (numPointer[k][l] > 0)
                     i = (i - 1 < 0) ? n - 1 : i - 1;
                 else
                 {
-                    i = x;
-                    j = y;
+                    i = k;
+                    j = l;
                 }
                 break;
             }
@@ -171,14 +171,20 @@ public:
 
 // signed main()
 // {
-//     MagicSquare ms(5, "br");
+//     cout << "tl" << endl;
+//     MagicSquare ms(5, "tl");
 //     ms.run();
-//     vector<vector<int>> nums = ms.getData();
-//     for (int i = 0; i < 5; i++)
-//     {
-//         for (int j = 0; j < 5; j++)
-//             cout << nums[i][j] << " ";
-//         cout << endl;
-//     }
 //     ms.print();
+//     cout << "tr" << endl;
+//     MagicSquare ms1(5, "tr");
+//     ms1.run();
+//     ms1.print();
+//     cout << "bl" << endl;
+//     MagicSquare ms2(5, "bl");
+//     ms2.run();
+//     ms2.print();
+//     cout << "br" << endl;
+//     MagicSquare ms3(5, "br");
+//     ms3.run();
+//     ms3.print();
 // }

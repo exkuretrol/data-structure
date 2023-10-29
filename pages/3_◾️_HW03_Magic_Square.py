@@ -39,6 +39,14 @@ run = st.button("啟動", type="primary")
 
 cmap = matplotlib.colormaps['RdYlGn']
 
+def index_names(index):
+    if (index == size_input): return "欄總和"
+    return str(index)
+
+def col_names(index):
+    if (index == size_input): return "列總和"
+    return str(index)
+    
 if run:
     ms = MagicSquare(size_input, direction_input)
     ms.run()
@@ -52,7 +60,7 @@ if run:
     df.loc[:, size_input] = df.sum(axis=1)
 
     df.loc[size_input, size_input] = diag_sum
-    df.rename(index={size_input: "欄總和"}, columns={size_input: "列總和"}, inplace=True)
+    df.rename(index=index_names, columns=col_names, inplace=True)
 
     st.dataframe(df.style.format(precision=0).background_gradient(
         cmap=cmap, axis=None, vmin=1, vmax=size_input * size_input))

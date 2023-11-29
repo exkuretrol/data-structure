@@ -6,7 +6,7 @@ st.set_page_config(
 
 st.header("程式碼說明")
 
-hw_names = {"hw1": "作業一", "hw2": "作業二", "hw3": "作業三", "hw4": "作業四"}
+hw_names = {"hw1": "作業一", "hw2": "作業二", "hw3": "作業三", "hw3.5": "加分作業", "hw4": "作業四"}
 
 hw = st.selectbox(label="作業", options=hw_names,
                   format_func=lambda x: hw_names.get(x))
@@ -55,7 +55,22 @@ elif hw == "hw3":
         with open('pages/3_◾️_HW03_Magic_Square.py') as f:
             src = f.read()
         st.code(src)
+elif hw == "hw3.5":
+    tab0, tab1, tab2 = st.tabs(["main.cpp", "knights-tour.hpp", "Knight's_Tour.py"])
+    with tab0:
+        with open('src/main.cpp') as f:
+            src = f.read()
+        st.code(src, language="cpp")
+    
+    with tab1:
+        with open('src/knights-tour.hpp') as f:
+            src = f.read()
+        st.code(src, language="cpp")
 
+    with tab2:
+        with open('pages/4_♟️HW03.5_Knight\'s_Tour.py') as f:
+            src = f.read()
+        st.code(src)
 
 else:
     st.write("還沒寫完")

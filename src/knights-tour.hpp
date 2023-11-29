@@ -18,15 +18,16 @@ private:
     /// @brief 隨機產生始點
     bool random = false;
 
-    /// @brief 逐步檢查
-    // bool trace = false;
-
     /// @brief 預先定義的 x, y 位移
     int move_dx[possible_directions] = {1, 2, 2, 1, -1, -2, -2, -1};
     int move_dy[possible_directions] = {-2, -1, 1, 2, 2, 1, -1, -2};
 
     /// @brief 整個棋盤
     int **board;
+
+    /// @brief 使用者輸入的 x, y
+    int ix = -1;
+    int iy = -1;
 
     /// @brief 產生在數字 0 ~ 棋盤寬度的隨機數
     /// @return 隨機數
@@ -62,6 +63,12 @@ public:
                 board[i][j] = 0;
     }
 
+    KnightsTour(int size, int x, int y) : KnightsTour(size)
+    {
+        this->ix = x;
+        this->iy = y;
+    }
+
     /// @brief 是否隨機
     void toggle_random()
     {
@@ -69,11 +76,11 @@ public:
     }
 
     /// @brief 執行函式，呼叫後騎士開始從起始點行走，直到走到終點或是沒有辦法行走。
-    void run()
+    /// @return 執行結果
+    bool run()
     {
-        // 預設為中心點
-        int x = n / 2;
-        int y = x;
+        int x;
+        int y;
 
         // 如果隨機，產生隨機的 x, y
         if (random)
@@ -81,7 +88,19 @@ public:
             x = generate_random_number();
             y = generate_random_number();
         }
-        
+        // 預設為中心點
+        else if (ix == -1 && iy == -1)
+        {
+            x = n / 2;
+            y = x;
+        }
+        // 使用者輸入
+        else
+        {
+            x = ix;
+            y = iy;
+        }
+
         // 棋盤的第一步
         board[x][y] = 1;
 
@@ -109,8 +128,7 @@ public:
             // 找不到路徑時結束程式
             if (next_n == 0)
             {
-                cout << "找不到騎士路徑" << endl;
-                return;
+                return false;
             }
 
             // 初始化 next_move 陣列，記錄可走方位次數用
@@ -147,6 +165,7 @@ public:
             // 在棋盤上畫上步數
             board[x][y] = step;
         }
+        return true;
     }
 
     /// @brief 印出棋盤

@@ -34,6 +34,7 @@ PYBIND11_MODULE(homework, m)
 
     py::class_<KnightsTour>(m, "KnightsTour")
         .def(py::init<int>(), py::arg("size") = 10)
+        .def(py::init<int, int, int>(), py::arg("size"), py::arg("x"), py::arg("y"))
         .def("toggle_random", &KnightsTour::toggle_random)
         .def("run", &KnightsTour::run)
         .def("print", &KnightsTour::print)

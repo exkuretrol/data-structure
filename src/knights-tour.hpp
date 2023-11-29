@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <unistd.h>
+#define possible_directions 8
 
 using namespace std;
 
@@ -18,11 +19,11 @@ private:
     bool random = false;
 
     /// @brief 逐步檢查
-    bool trace = false;
+    // bool trace = false;
 
     /// @brief 預先定義的 x, y 位移
-    int move_dx[8] = {1, 2, 2, 1, -1, -2, -2, -1};
-    int move_dy[8] = {-2, -1, 1, 2, 2, 1, -1, -2};
+    int move_dx[possible_directions] = {1, 2, 2, 1, -1, -2, -2, -1};
+    int move_dy[possible_directions] = {-2, -1, 1, 2, 2, 1, -1, -2};
 
     /// @brief 整個棋盤
     int **board;
@@ -90,7 +91,7 @@ public:
             vector<int> next_x;
             vector<int> next_y;
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < possible_directions; i++)
             {
                 int tx = x + move_dx[i];
                 int ty = y + move_dy[i];
@@ -102,19 +103,22 @@ public:
                 }
             }
 
+            // 可以走的步數總數
+            int next_n = next_x.size();
+
             // 找不到路徑時結束程式
-            if (next_x.size() == 0)
+            if (next_n == 0)
             {
                 cout << "找不到騎士路徑" << endl;
                 return;
             }
 
             // 初始化 next_move 陣列，記錄可走方位次數用
-            vector<int> next_move(next_x.size());
+            vector<int> next_move(next_n);
             // 用前一個 For 迴圈的結果再走下一步
-            for (int i = 0; i < next_x.size(); i++)
+            for (int i = 0; i < next_n; i++)
             {
-                for (int j = 0; j < 8; j++)
+                for (int j = 0; j < possible_directions; j++)
                 {
                     int tx = next_x[i] + move_dx[j];
                     int ty = next_y[i] + move_dy[j];
@@ -130,7 +134,7 @@ public:
             int m = 0;
 
             // 檢查 next_move 中的陣列，選出最小元素的 index
-            for (int i = 1; i < next_move.size(); i++)
+            for (int i = 1; i < next_n; i++)
             {
                 if (next_move[i] < next_move[m])
                     m = i;

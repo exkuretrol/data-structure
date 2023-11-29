@@ -1,6 +1,7 @@
 #include "permutation.hpp"
 #include "tower-of-honai.hpp"
 #include "magic-square.hpp"
+#include "knights-tour.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -30,4 +31,11 @@ PYBIND11_MODULE(homework, m)
         .def("run", &MagicSquare::run)
         .def("print", &MagicSquare::print)
         .def("getData", &MagicSquare::getData);
+
+    py::class_<KnightsTour>(m, "KnightsTour")
+        .def(py::init<int>(), py::arg("size") = 10)
+        .def("toggle_random", &KnightsTour::toggle_random)
+        .def("run", &KnightsTour::run)
+        .def("print", &KnightsTour::print)
+        .def("get_data", &KnightsTour::get_data);
 }

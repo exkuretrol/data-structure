@@ -68,7 +68,7 @@ elif hw == "hw3.5":
         st.code(src, language="cpp")
 
     with tab2:
-        with open('pages/4_♟️HW03.5_Knight\'s_Tour.py') as f:
+        with open('pages/4_♟️_HW03a_Knight\'s_Tour.py') as f:
             src = f.read()
         st.code(src)
 

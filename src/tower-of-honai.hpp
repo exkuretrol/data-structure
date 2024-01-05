@@ -45,7 +45,7 @@ public:
 
 // signed main()
 // {
-//     Honai h(3);
+//     Honai h = Honai();
 //     h.run(3);
 //     h.print();
 // }

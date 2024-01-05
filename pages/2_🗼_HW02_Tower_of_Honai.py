@@ -25,7 +25,7 @@ run = st.button("啟動", type="primary")
 
 
 if run:
-    honai = Honai(int(input_layer))
+    honai = Honai()
     honai.run(int(input_layer))
 
     ls = honai.getData()

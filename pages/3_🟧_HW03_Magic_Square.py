@@ -8,7 +8,7 @@ warnings.simplefilter(action='ignore', category=UserWarning)
 
 st.set_page_config(
     page_title="魔術方陣",
-    page_icon="◾️"
+    page_icon="️🟧"
 )
 
 st.header("魔術方陣")

@@ -30,7 +30,7 @@ if input_types == 'manual':
 else:
     col1, col2 = st.columns([1, 3], gap="medium")
     with col1:
-        input_n = st.number_input("n", min_value=1, max_value=10000, value=3)
+        input_n = st.number_input("n", min_value=1, max_value=100, value=3)
     with col2:
         input_minmax = st.slider("minmax", min_value=0, max_value=1000, value=(0, 100))
 

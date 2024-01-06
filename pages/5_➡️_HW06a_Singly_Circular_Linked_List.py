@@ -61,7 +61,7 @@ with c2:
     with col1:
         btn_action = st.button(input_options_action.get(input_action), type="primary", use_container_width=True)
     with col2:
-        btn_empty = st.button(":violet[empty :bomb:]", type="secondary", use_container_width=True)
+        btn_empty = st.button(":violet[清空 :bomb:]", type="secondary", use_container_width=True)
     with col3:
         btn_invert = st.button(":rainbow[反轉 ↩]", use_container_width=True)
 
@@ -105,7 +105,12 @@ def delete(target: int = None):
             case "after":
                 res = l.delete_after(target)
 
-        if res == -1: raise ValueError(f"找不到目標數字 {target}")
+        if res == -1: 
+            if input_location in ["head", "tail"]:
+                raise ValueError(f"串列已空")
+            else:
+                raise ValueError(f"找不到目標數字 {target}")
+        if res == -2: raise ValueError(f"{input_options_location.get(input_location)}沒有數字")
     except ValueError as e:
         st.toast(e)
 

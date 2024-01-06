@@ -78,6 +78,7 @@ private:
         struct node *o, *q;
         tie(o, p) = search_node_by_address_with_previous(p, 1);
         q = p->next;
+        if (q == head) tail = o;
         o->next = q;
         delete p;
     }
@@ -181,7 +182,7 @@ public:
 
     int delete_front()
     {
-        if (head->next == tail)
+        if (head == tail)
             return -1;
         delete_node_by_address(head->next);
         return 0;
@@ -201,7 +202,7 @@ public:
         if (p == head)
             return -1;
         if (p == tail)
-            return -1;
+            return -2;
         struct node *q = p->next;
         if (q == tail)
             tail = p;
@@ -215,6 +216,8 @@ public:
         struct node *n, *p = search_node_by_data(el);
         if (p == head)
             return -1;
+        if (p == head->next)
+            return -2;
         tie(n, p) = search_node_by_address_with_previous(p, 2);
         struct node *o = n->next;
         n->next = p;
@@ -297,6 +300,9 @@ public:
 // signed main()
 // {
 //     SinglyCircularLinkedList list = SinglyCircularLinkedList();
-//     list.insert_rear(100);
+//     list.insert_rear(10);
+//     list.insert_rear(20);
+//     list.print_detailed_nodes();
+//     list.delete_before(10);
 //     list.print_detailed_nodes();
 // }

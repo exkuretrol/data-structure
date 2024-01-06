@@ -53,6 +53,21 @@ private:
         return c;
     }
 
+    int delete_node_by_address(struct node *p)
+    {
+        struct node *o, *q;
+        if (p == head)
+            return -1;
+        o = p->prev;
+        q = p->next;
+        if (p == tail)
+            tail = o;
+        o->next = q;
+        q->prev = o;
+        delete p;
+        return 0;
+    }
+
     string extract_last_4_chars(struct node *p)
     {
         stringstream ss;
@@ -123,10 +138,11 @@ public:
 
     int insert_before(int target, int num)
     {
-        struct node *o = search_node_by_data(target), *p;
-        if (o == head)
+        struct node *o, *p;
+        p = search_node_by_data(target);
+        if (p == head)
             return -1;
-        p = create_node(num);
+        o = create_node(num);
         o->next = p;
         o->prev = p->prev;
         p->prev->next = o;
@@ -149,26 +165,23 @@ public:
 
     int delete_node(int target)
     {
-        struct node *o, *p, *q;
+        struct node *p;
         p = search_node_by_data(target);
         if (p == head)
             return -1;
-        o = p->prev;
-        q = p->next;
-        o->next = q;
-        q->prev = o;
-        delete p;
+        delete_node_by_address(p);
         return 0;
     }
 
-    // TODO: improve delete method
     int delete_before(int target)
     {
         struct node *p;
         p = search_node_by_data(target);
         if (p == head)
             return -1;
-        delete_node(p->prev->data);
+        if (p == head->next)
+            return -2;
+        delete_node_by_address(p->prev);
         return 0;
     }
 
@@ -178,27 +191,25 @@ public:
         p = search_node_by_data(target);
         if (p == head)
             return -1;
-        delete_node(p->next->data);
+        if (p == tail)
+            return -2;
+        delete_node_by_address(p->next);
         return 0;
     }
 
     int delete_front()
     {
-        struct node *p;
-        p = search_node_by_data(head->next->data);
-        if (p == head)
+        if (head == tail)
             return -1;
-        delete_node(p->data);
+        delete_node_by_address(head->next);
         return 0;
     }
 
     int delete_rear()
     {
-        struct node *p;
-        p = search_node_by_data(tail->data);
-        if (p == head)
+        if (head == tail)
             return -1;
-        delete_node(p->data);
+        delete_node_by_address(tail);
         return 0;
     }
 
@@ -279,24 +290,12 @@ public:
 // {
 //     class DoublyCircularLinkedList list = DoublyCircularLinkedList();
 //     // list.insert_n_nodes(5);
-//     list.insert_front(10);
-//     list.insert_front(20);
-//     list.insert_front(30);
-//     list.insert_front(40);
-//     list.insert_front(50);
+//     list.insert_rear(10);
+//     list.insert_rear(20);
+//     list.insert_rear(30);
+//     list.insert_rear(40);
+//     list.insert_rear(50);
 //     list.print_detailed_nodes();
-//     list.delete_node(30);
-//     list.print_detailed_nodes();
-//     int num = 60;
-//     if (list.delete_node(num))
-//     {
-//         cout << num << " not found!" << endl;
-//     }
-//     num = 900;
-
-//     if (list.insert_after(10, 90))
-//     {
-//         cout << num << " not found!" << endl;
-//     }
+//     cout << list.insert_before(10, 60) << endl;
 //     list.print_detailed_nodes();
 // }

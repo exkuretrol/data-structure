@@ -105,16 +105,17 @@ public:
         {
             print_node(p, true);
         }
+        print_nodes();
     }
 };
 
-signed main()
-{
-    LinkedStack stack = LinkedStack();
-    stack.push(10);
-    stack.push(20);
-    stack.push(30);
-    stack.push(40);
-    stack.push(50);
-    stack.print_detailed_nodes();
-}
+// signed main()
+// {
+//     LinkedStack stack = LinkedStack();
+//     stack.push(10);
+//     stack.push(20);
+//     stack.push(30);
+//     stack.push(40);
+//     stack.push(50);
+//     stack.print_detailed_nodes();
+// }

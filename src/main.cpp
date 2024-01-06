@@ -2,8 +2,12 @@
 #include "tower-of-honai.hpp"
 #include "magic-square.hpp"
 #include "knights-tour.hpp"
+#include "singly-circular-linked-list.hpp"
+#include "doubly-circular-linked-list.hpp"
+#include "linked-stack.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/iostream.h>
 
 namespace py = pybind11;
 
@@ -39,4 +43,43 @@ PYBIND11_MODULE(homework, m)
         .def("run", &KnightsTour::run)
         .def("print", &KnightsTour::print)
         .def("get_data", &KnightsTour::get_data);
+
+    py::add_ostream_redirect(m, "ostream_redirect");
+
+    py::class_<SinglyCircularLinkedList>(m, "SinglyCircularLinkedList")
+        .def(py::init<>())
+        .def("insert_front", &SinglyCircularLinkedList::insert_front)
+        .def("insert_rear", &SinglyCircularLinkedList::insert_rear)
+        .def("insert_after", &SinglyCircularLinkedList::insert_after)
+        .def("insert_before", &SinglyCircularLinkedList::insert_before)
+        .def("delete_node", &SinglyCircularLinkedList::delete_node)
+        .def("delete_front", &SinglyCircularLinkedList::delete_front)
+        .def("delete_rear", &SinglyCircularLinkedList::delete_rear)
+        .def("delete_after", &SinglyCircularLinkedList::delete_after)
+        .def("delete_before", &SinglyCircularLinkedList::delete_before)
+        .def("invert", &SinglyCircularLinkedList::invert)
+        .def("search_node", &SinglyCircularLinkedList::search_node)
+        .def("print_nodes", &SinglyCircularLinkedList::print_nodes, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
+        .def("print_detailed_nodes", &SinglyCircularLinkedList::print_detailed_nodes, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
+        .def("delete_all_nodes", &SinglyCircularLinkedList::delete_all_nodes);
+
+    py::class_<DoublyCircularLinkedList>(m, "DoublyCircularLinkedList")
+        .def(py::init<>())
+        .def("insert_front", &DoublyCircularLinkedList::insert_front)
+        .def("insert_rear", &DoublyCircularLinkedList::insert_rear)
+        .def("insert_after", &DoublyCircularLinkedList::insert_after)
+        .def("insert_before", &DoublyCircularLinkedList::insert_before)
+        .def("delete_node", &DoublyCircularLinkedList::delete_node)
+        .def("invert", &DoublyCircularLinkedList::invert)
+        .def("search_node", &DoublyCircularLinkedList::search_node)
+        .def("print_nodes", &DoublyCircularLinkedList::print_nodes, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
+        .def("print_detailed_nodes", &DoublyCircularLinkedList::print_detailed_nodes, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
+        .def("delete_all_nodes", &DoublyCircularLinkedList::delete_all_nodes);
+
+    py::class_<LinkedStack>(m, "LinkedStack")
+        .def(py::init<>())
+        .def("push", &LinkedStack::push)
+        .def("pop", &LinkedStack::pop)
+        .def("print_nodes", &LinkedStack::print_nodes, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
+        .def("print_detailed_nodes", &LinkedStack::print_detailed_nodes, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
 }

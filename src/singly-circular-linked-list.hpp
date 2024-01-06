@@ -1,15 +1,17 @@
 #include <iostream>
 #include <sstream>
+#include <utility>
+#include <tuple>
+#include <string>
 #include <cstdlib>
 #include <ctime>
 using namespace std;
 
-class DoublyCircularLinkedList
+class SinglyCircularLinkedList
 {
     struct node
     {
         int data;
-        struct node *prev;
         struct node *next;
     };
 
@@ -20,16 +22,34 @@ private:
     {
         struct node *p = new node();
         p->data = el;
-        p->next = nullptr;
-        p->prev = nullptr;
         return p;
+    }
+
+    pair<struct node *, struct node *> search_node_by_address_with_previous(struct node *t, int depth = 1)
+    {
+        struct node *c = head->next, *p = nullptr, *pp = nullptr;
+        if (c == t)
+        {
+            return depth == 1 ? make_pair(head, t) : make_pair(tail, t);
+        }
+        if (c->next == t)
+        {
+            return depth == 1 ? make_pair(c, t) : make_pair(head, t);
+        }
+
+        while (c != t && c != head)
+        {
+            pp = p;
+            p = c;
+            c = c->next;
+        }
+        return depth == 1 ? make_pair(p, c) : make_pair(pp, c);
     }
 
     void initialization()
     {
         struct node *p = create_node(0);
         p->next = p;
-        p->prev = p;
         head = tail = p;
     }
 
@@ -53,6 +73,15 @@ private:
         return c;
     }
 
+    void delete_node_by_address(struct node *p)
+    {
+        struct node *o, *q;
+        tie(o, p) = search_node_by_address_with_previous(p, 1);
+        q = p->next;
+        o->next = q;
+        delete p;
+    }
+
     string extract_last_4_chars(struct node *p)
     {
         stringstream ss;
@@ -68,11 +97,9 @@ private:
             cout << p->data;
         else
         {
-            // cout << p << " ";
             cout << extract_last_4_chars(p) << " ";
-            // cout << "[ " << p->prev;
-            cout << "[ " << extract_last_4_chars(p->prev);
-            cout << " | " << p->data;
+            // cout << p << " ";
+            cout << "[ " << p->data;
             cout << " | " << extract_last_4_chars(p->next);
             // cout << " | " << p->next;
             cout << " ]" << endl;
@@ -80,29 +107,27 @@ private:
     }
 
 public:
-    DoublyCircularLinkedList()
+    SinglyCircularLinkedList()
     {
-        this->initialization();
+        initialization();
     }
 
     void insert_front(int el)
     {
         struct node *p = create_node(el);
         p->next = head->next;
-        p->prev = head;
-        head->next->prev = p;
+        // TODO: first node, move tail pointer to p
+        if (head->next == head)
+            tail = p;
         head->next = p;
-        tail = head->prev;
     }
 
     void insert_rear(int el)
     {
         struct node *p = create_node(el);
-        p->prev = tail;
         p->next = tail->next;
         tail->next = p;
         tail = p;
-        head->prev = tail;
     }
 
     int insert_after(int target, int num)
@@ -113,24 +138,22 @@ public:
             return -1;
         q = create_node(num);
         q->next = p->next;
-        q->prev = p;
-        p->next->prev = q;
-        if (p->next == head)
-            tail = q;
         p->next = q;
+        if (q->next == head)
+            tail = q;
         return 0;
     }
 
     int insert_before(int target, int num)
     {
-        struct node *o = search_node_by_data(target), *p;
-        if (o == head)
+        struct node *n, *o, *p;
+        p = search_node_by_data(target);
+        if (p == head)
             return -1;
-        p = create_node(num);
+        o = create_node(num);
+        tie(n, p) = search_node_by_address_with_previous(p, 1);
         o->next = p;
-        o->prev = p->prev;
-        p->prev->next = o;
-        p->prev = o;
+        n->next = o;
         return 0;
     }
 
@@ -143,22 +166,59 @@ public:
         {
             num = rand() % (M - m + 1) + m;
             insert_rear(num);
-            cout << num << " ";
         }
     }
 
-    int delete_node(int target)
+    int delete_node(int el)
     {
-
-        struct node *o, *p, *q;
-        p = search_node_by_data(target);
+        struct node *p;
+        p = search_node_by_data(el);
         if (p == head)
             return -1;
-        o = p->prev;
-        q = p->next;
-        o->next = q;
-        q->prev = o;
-        delete p;
+        delete_node_by_address(p);
+        return 0;
+    }
+
+    int delete_front()
+    {
+        if (head->next == tail)
+            return -1;
+        delete_node_by_address(head->next);
+        return 0;
+    }
+
+    int delete_rear()
+    {
+        if (head == tail)
+            return -1;
+        delete_node_by_address(tail);
+        return 0;
+    }
+
+    int delete_after(int el)
+    {
+        struct node *p = search_node_by_data(el);
+        if (p == head)
+            return -1;
+        if (p == tail)
+            return -1;
+        struct node *q = p->next;
+        if (q == tail)
+            tail = p;
+        p->next = q->next;
+        delete q;
+        return 0;
+    }
+
+    int delete_before(int el)
+    {
+        struct node *n, *p = search_node_by_data(el);
+        if (p == head)
+            return -1;
+        tie(n, p) = search_node_by_address_with_previous(p, 2);
+        struct node *o = n->next;
+        n->next = p;
+        delete o;
         return 0;
     }
 
@@ -175,7 +235,6 @@ public:
             s = r;
             r = r->next;
             s->next = t;
-            s->prev = r;
         }
         head->next = s;
     }
@@ -195,11 +254,13 @@ public:
     {
         struct node *p = head;
         cout << "[ ", print_node(p), cout << " (empty node)", p = p->next;
-        cout << " ↹ ", print_node(p), p = p->next;
-        for (; p != head; p = p->next)
-            cout << " ↹ ", print_node(p);
-        cout << " ↹ (empty node)";
-        cout << " ]" << endl;
+        if (head != p)
+        {
+            cout << " ↦ ", print_node(p), p = p->next;
+            for (; p != head; p = p->next)
+                cout << " ↦ ", print_node(p);
+        }
+        cout << " ↦ (empty node) ]" << endl;
     }
 
     void print_detailed_nodes()
@@ -233,28 +294,9 @@ public:
     }
 };
 
-signed main()
-{
-    class DoublyCircularLinkedList list = DoublyCircularLinkedList();
-    // list.insert_n_nodes(5);
-    list.insert_front(10);
-    list.insert_front(20);
-    list.insert_front(30);
-    list.insert_front(40);
-    list.insert_front(50);
-    list.print_detailed_nodes();
-    list.delete_node(30);
-    list.print_detailed_nodes();
-    int num = 60;
-    if (list.delete_node(num))
-    {
-        cout << num << " not found!" << endl;
-    }
-    num = 900;
-
-    if (list.insert_after(10, 90))
-    {
-        cout << num << " not found!" << endl;
-    }
-    list.print_detailed_nodes();
-}
+// signed main()
+// {
+//     SinglyCircularLinkedList list = SinglyCircularLinkedList();
+//     list.insert_rear(100);
+//     list.print_detailed_nodes();
+// }

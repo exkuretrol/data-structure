@@ -6,7 +6,7 @@ st.set_page_config(
 
 st.header("程式碼說明")
 
-hw_names = {"hw1": "作業一", "hw2": "作業二", "hw3": "作業三", "hw3.5": "加分作業", "hw4": "作業四"}
+hw_names = {"hw1": "作業一", "hw2": "作業二", "hw3": "作業三", "hw3.5": "加分作業", "hw4": "作業四", "hw5": "作業五", "hw6": "作業六"}
 
 hw = st.selectbox(label="作業", options=hw_names,
                   format_func=lambda x: hw_names.get(x))
@@ -72,5 +72,43 @@ elif hw == "hw3.5":
             src = f.read()
         st.code(src)
 
+if hw == "hw6":
+    tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+        ["main.cpp", "singly-circular-linked-list.hpp", "doubly-circular-linked-list.hpp", "linked-stack.hpp", "Singly_Circular_Linked_List.py", "Doubly_Circular_Linked_List.py", "Linked_Stack.py"])
+
+    with tab0:
+        with open('src/main.cpp') as f:
+            src = f.read()
+        st.code(src, language="cpp")
+
+    with tab1:
+        with open('src/singly-circular-linked-list.hpp') as f:
+            src = f.read()
+        st.code(src, language="cpp")
+
+    with tab2:
+        with open('src/doubly-circular-linked-list.hpp') as f:
+            src = f.read()
+        st.code(src, language="cpp")
+
+    with tab3:
+        with open('src/linked-stack.hpp') as f:
+            src = f.read()
+        st.code(src, language="cpp")
+
+    with tab4:
+        with open('pages/5_➡️_HW06a_Singly_Circular_Linked_List.py') as f:
+            src = f.read()
+        st.code(src)
+
+    with tab5:
+        with open('pages/6_↔️_HW06b_Doubly_Circular_Linked_List.py') as f:
+            src = f.read()
+        st.code(src)
+
+    with tab6:
+        with open('pages/7_📚_HW06c_Linked_Stack.py') as f:
+            src = f.read()
+        st.code(src)
 else:
     st.write("還沒寫完")

@@ -66,7 +66,7 @@ with c2:
         btn_invert = st.button(":rainbow[反轉 ↩]", use_container_width=True)
 
 input_options_detailed = {'detailed': '詳細顯示（包含記憶體位址）', 'normal': '僅顯示串列內容'}
-input_detailed = st.radio('output', input_options_detailed, format_func=lambda x: input_options_detailed.get(x), index=1)
+input_detailed = st.radio('output', input_options_detailed, format_func=lambda x: input_options_detailed.get(x), index=0)
 
 @st.cache_resource
 def init_list():

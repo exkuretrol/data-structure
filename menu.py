@@ -63,11 +63,12 @@ def algorithm_menu():
     )
 
 
+subject_options = {"data_structure": "資料結構", "algorithm": "演算法"}
+
+
 def menu():
 
     st.sidebar.page_link(page="app.py", label="首頁", icon="🏠")
-
-    subject_options = {"data_structure": "資料結構", "algorithm": "演算法"}
 
     def set_subject():
         st.session_state.subject = st.session_state._subject
@@ -88,8 +89,6 @@ def menu():
         data_structure_menu()
     else:
         algorithm_menu()
-
-    st.sidebar.caption("輸入說明")
 
 
 def menu_with_redirect():

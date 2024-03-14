@@ -22,4 +22,5 @@ st.markdown(
     """
 )
 
+st.page_link(page="pages/source_code.py", label="程式碼說明", icon="👀")
 st.page_link(page="https://kuaz.info", label="卍煞氣a饅頭卍", icon="😾")

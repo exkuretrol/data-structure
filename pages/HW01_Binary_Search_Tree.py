@@ -24,16 +24,16 @@ with c1:
             horizontal=True,
         )
     with col2:
-        output_options_action = {
+        output_options = {
             "preorder": "前序",
             "inorder": "中序",
             "postorder": "後序",
         }
 
-        output_action = st.radio(
+        output_method = st.radio(
             "output",
-            output_options_action,
-            format_func=lambda x: output_options_action.get(x),
+            output_options,
+            format_func=lambda x: output_options.get(x),
             horizontal=True,
             index=1,
         )
@@ -116,27 +116,30 @@ def empty():
 
 
 if btn_action:
-    match input_action:
-        case "create":
-            if input_method == "manual":
-                insert(input_num)
-            else:
-                m, M = input_minmax
-                for _ in range(input_n):
-                    num = random.randint(m, M)
-                    insert(num)
-        case "search":
-            search(input_target)
+    if input_action == "create":
+        if input_method == "manual":
+            insert(input_num)
+        else:
+            m, M = input_minmax
+            for _ in range(input_n):
+                num = random.randint(m, M)
+                insert(num)
+    elif input_action == "search":
+        search(input_target)
 
 if btn_empty:
     empty()
 
 
 code = st.code(language="css", body="", line_numbers=True)
-with rd.stdout(to=code):
-    if output_action == "preorder":
-        bst.print(0)
-    elif output_action == "inorder":
-        bst.print(1)
-    else:
-        bst.print(2)
+
+if btn_action or output_method:
+    with rd.stdout(to=code):
+        if output_method == "preorder":
+            bst.print(0)
+        elif output_method == "inorder":
+            bst.print(1)
+        else:
+            bst.print(2)
+else:
+    st.stop()

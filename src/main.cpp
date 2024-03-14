@@ -5,6 +5,7 @@
 #include "singly-circular-linked-list.hpp"
 #include "doubly-circular-linked-list.hpp"
 #include "linked-stack.hpp"
+#include "binary-search-tree.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
@@ -86,4 +87,11 @@ PYBIND11_MODULE(homework, m)
         .def("pop", &LinkedStack::pop)
         .def("print_nodes", &LinkedStack::print_nodes, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
         .def("print_detailed_nodes", &LinkedStack::print_detailed_nodes, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
+
+    py::class_<BinarySearchTree>(m, "BinarySearchTree")
+        .def(py::init<>())
+        .def("search", &BinarySearchTree::search)
+        .def("insert", &BinarySearchTree::insert)
+        .def("empty", &BinarySearchTree::empty)
+        .def("print", &BinarySearchTree::print, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
 }

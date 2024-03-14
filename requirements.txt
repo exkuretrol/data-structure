@@ -1,6 +1,5 @@
-pybind11
+pybind11==2.10.4
 streamlit
 homework @ git+https://github.com/exkuretrol/data-structure@main
 rcviz @ git+https://github.com/carlsborg/rcviz@master
 matplotlib
-streamlit_antd_components

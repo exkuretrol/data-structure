@@ -21,7 +21,7 @@ if "toggled" not in st.session_state:
 with c1:
     col1, col2 = st.columns([1, 1])
     with col1:
-        input_options_action = {"create": "新增", "search": "搜尋"}
+        input_options_action = {"create": "新增", "search": "搜尋", "delete": "刪除"}
 
         input_action = st.radio(
             "action",
@@ -130,6 +130,15 @@ def search(num: int):
         col2.button("忽略", use_container_width=True)
 
 
+def delete(num: int):
+    result = bst.search(num)
+    if result:
+        bst.delete(num)
+        st.info(f"刪除了數字 {num}")
+    else:
+        st.error(f"找不到 {num}!")
+
+
 def empty():
     bst.empty()
 
@@ -146,6 +155,8 @@ if btn_action:
                 insert(num)
     elif input_action == "search":
         search(input_target)
+    elif input_action == "delete":
+        delete(input_target)
 
 if btn_empty:
     empty()

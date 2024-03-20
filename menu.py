@@ -61,6 +61,11 @@ def algorithm_menu():
         label="HW 01 二元搜尋樹（遞迴）",
         icon="🎄",
     )
+    st.sidebar.page_link(
+        page=construct_page_path("HW02_Binary_Search_Tree_Iteration.py"),
+        label="HW 02 二元搜尋樹（遞迴 / 迭代）",
+        icon="🎄",
+    )
 
 
 subject_options = {"data_structure": "資料結構", "algorithm": "演算法"}

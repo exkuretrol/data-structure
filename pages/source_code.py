@@ -162,5 +162,23 @@ else:
             with open("pages/HW01_Binary_Search_Tree.py") as f:
                 src = f.read()
             st.code(src)
+    elif hw == "hw2":
+        tab0, tab1, tab2 = st.tabs(
+            ["main.cpp", "binary-search-tree.hpp", "Binary_Search_Tree_Iteration.py"]
+        )
+        with tab0:
+            with open("src/main.cpp") as f:
+                src = f.read()
+            st.code(src, language="cpp")
+
+        with tab1:
+            with open("src/binary-search-tree.hpp") as f:
+                src = f.read()
+            st.code(src, language="cpp")
+
+        with tab2:
+            with open("pages/HW02_Binary_Search_Tree_Iteration.py") as f:
+                src = f.read()
+            st.code(src)
     else:
         st.write("還沒寫完")

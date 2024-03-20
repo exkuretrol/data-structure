@@ -18,10 +18,6 @@ if "toggled" not in st.session_state:
     st.session_state.toggled = False
 
 
-def toggle_output():
-    st.session_state.toggled = True
-
-
 with c1:
     col1, col2 = st.columns([1, 1])
     with col1:
@@ -32,7 +28,6 @@ with c1:
             input_options_action,
             format_func=lambda x: input_options_action.get(x),
             horizontal=True,
-            on_change=toggle_output,
         )
     with col2:
         output_options_action = {
@@ -47,7 +42,6 @@ with c1:
             format_func=lambda x: output_options_action.get(x),
             horizontal=True,
             index=1,
-            on_change=toggle_output,
         )
 
 
@@ -61,7 +55,6 @@ with c2:
             format_func=lambda x: input_options_method.get(x),
             index=1,
             horizontal=True,
-            on_change=toggle_output,
         )
 
         if input_method == "manual":
@@ -76,16 +69,13 @@ with c2:
         else:
             col1, col2 = st.columns([1, 3], gap="medium")
             with col1:
-                input_n = st.number_input(
-                    "n", min_value=1, max_value=100, value=3, on_change=toggle_output
-                )
+                input_n = st.number_input("n", min_value=1, max_value=100, value=3)
             with col2:
                 input_minmax = st.slider(
                     "minmax",
                     min_value=0,
                     max_value=1000,
                     value=(0, 100),
-                    on_change=toggle_output,
                 )
             st.sidebar.markdown(
                 """
@@ -95,9 +85,7 @@ with c2:
             """
             )
     else:
-        input_target = st.number_input(
-            "target", min_value=0, max_value=2**31 - 1, on_change=toggle_output
-        )
+        input_target = st.number_input("target", min_value=0, max_value=2**31 - 1)
     col1, col2, _, _ = st.columns([2, 2, 2, 5])
     with col1:
         btn_action = st.button(
@@ -137,6 +125,7 @@ def empty():
 
 
 if btn_action:
+    st.session_state.toggled = True
     if input_action == "create":
         if input_method == "manual":
             insert(input_num)
@@ -154,8 +143,7 @@ if btn_empty:
 
 code = st.code(language="css", body="", line_numbers=True)
 
-
-if btn_action or st.session_state.toggled:
+if st.session_state.toggled:
     with rd.stdout(to=code):
         if output_action == "preorder":
             bst.print(0)
@@ -163,6 +151,3 @@ if btn_action or st.session_state.toggled:
             bst.print(1)
         else:
             bst.print(2)
-        st.session_state.toggled = False
-else:
-    st.stop()

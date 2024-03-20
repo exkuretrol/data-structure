@@ -91,7 +91,11 @@ PYBIND11_MODULE(homework, m)
     py::class_<BinarySearchTree>(m, "BinarySearchTree")
         .def(py::init<>())
         .def("search", &BinarySearchTree::search)
+        .def("search_iter", &BinarySearchTree::search_iter)
         .def("insert", &BinarySearchTree::insert)
+        .def("insert_iter", &BinarySearchTree::insert_iter)
+        .def("delete", &BinarySearchTree::dewete)
+        .def("delete_iter", &BinarySearchTree::dewete_iter)
         .def("empty", &BinarySearchTree::empty)
         .def("print", &BinarySearchTree::print, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
 }

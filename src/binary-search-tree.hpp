@@ -1,18 +1,27 @@
 #include <iostream>
 using namespace std;
 
-struct bst_node
-{
-    int data;
-    bst_node *left;
-    bst_node *right;
-};
 class BinarySearchTree
 {
 
 private:
-    bst_node *root;
+    struct bst_node
+    {
+        int data;
+        bst_node *left;
+        bst_node *right;
+    };
+
+    struct bst_stack_node
+    {
+        bst_stack_node *prev;
+        bst_node *data;
+    };
+
+    bst_node *root = nullptr;
+    bst_stack_node *top = nullptr;
     bool first_node = true;
+    bool allow_duplicated_node = false;
 
     /**
      * create a new binary search tree node.
@@ -50,8 +59,6 @@ private:
      */
     bst_node *insert_new_node(bst_node *node, int x)
     {
-        if (first_node)
-            return create_root_node(x);
         if (node == nullptr)
             return new_node(x);
         if (x < node->data)
@@ -62,7 +69,7 @@ private:
     }
 
     /**
-     * search the binary search tree with the given number, root node
+     * search the binary search tree with the given number, root node (recursion)
      *
      * @param node root node of the binary tree
      * @param x the number to search
@@ -78,6 +85,91 @@ private:
             return search_from_node(node->left, x);
         else
             return search_from_node(node->right, x);
+    }
+
+    /**
+     * search the binary search tree with the given number, root node (iterative)
+     *
+     * @param node root node of the binary tree
+     * @param x the number to search
+     * @return binary tree node pointer or nullptr
+     */
+    bst_node *search_from_node_iter(bst_node *node, int x)
+    {
+        while (node != nullptr)
+        {
+            if (x == node->data)
+                return node;
+            if (x < node->data)
+                node = node->left;
+            else if (x > node->data)
+                node = node->right;
+        }
+        return nullptr;
+    }
+
+    /**
+     * Find the inorder immediate successor
+     *
+     * @param node root node
+     */
+    bst_node *inorder_immediate_successor(bst_node *node)
+    {
+        bst_node *p;
+        for (p = node->right; p->left != nullptr; p = p->left)
+            ;
+        return p;
+    }
+
+    /**
+     * delete specific node from binary search tree if node x exist (recursive)
+     *
+     * @param x search node x
+     */
+    bst_node *delete_from_node(bst_node *node, int x)
+    {
+        bst_node *temp;
+        // target node contain data x not found
+        if (node == nullptr)
+            return node;
+        if (x < node->data)
+            node->left = delete_from_node(node->left, x);
+        else if (x > node->data)
+            node->right = delete_from_node(node->right, x);
+        // node found
+        else
+        {
+            // node has zero or one children
+            if ((node->left == nullptr) || (node->right == nullptr))
+            {
+                temp = (node->left == nullptr) ? node->right : node->left;
+
+                // if node is leaf
+                if (temp == nullptr)
+                {
+                    temp = node;
+                    node = nullptr;
+                }
+                // node has children
+                else
+                {
+                    // override node with children node temp
+                    *node = *temp;
+                }
+
+                delete temp;
+            }
+            // node has two children
+            else
+            {
+                // find inorder_immediate_successor
+                temp = inorder_immediate_successor(node);
+                node->data = temp->data;
+                // delete the duplicated temp node by node data
+                node->right = delete_from_node(node->right, temp->data);
+            }
+        }
+        return node;
     }
 
     /**
@@ -150,6 +242,29 @@ private:
         }
     }
 
+    bst_stack_node *push(bst_node *node)
+    {
+        bst_stack_node *stack_node = new bst_stack_node();
+        stack_node->data = node;
+        if (top == nullptr)
+        {
+            top = new bst_stack_node();
+            top->data = nullptr;
+            top->prev = nullptr;
+        }
+        stack_node->prev = top;
+        top = stack_node;
+        return top;
+    }
+
+    bst_stack_node *pop()
+    {
+        bst_stack_node *node = top;
+        delete top;
+        top = node->prev;
+        return node;
+    }
+
 public:
     /**
      * Binary search tree constructor.
@@ -180,14 +295,169 @@ public:
         return true;
     }
 
+    bool search_iter(int x)
+    {
+        if (search_from_node_iter(root, x) == nullptr)
+            return false;
+
+        return true;
+    }
+
     /**
-     * insert new node with provided number
+     * insert new node with provided number (recursive)
      *
      * @param x the data of new node
      */
     void insert(int x)
     {
-        root = insert_new_node(root, x);
+        if (root == nullptr)
+            create_root_node(x);
+        else
+        {
+            root = insert_new_node(root, x);
+        }
+    }
+
+    /**
+     * insert new node with provided number (iterative)
+     *
+     * @param x the data of new node
+     */
+    int insert_iter(int x)
+    {
+        // parent
+        bst_node *p = nullptr;
+        // children
+        bst_node *c = root;
+        while (c != nullptr)
+        {
+            p = c;
+            if (!allow_duplicated_node && x == c->data)
+                return -1;
+            if (x < c->data)
+                c = c->left;
+            else
+                c = c->right;
+        }
+        c = new_node(x);
+        if (root == nullptr)
+            root = c;
+        else if (x < p->data)
+            p->left = c;
+        else
+            p->right = c;
+        return 0;
+    }
+
+    /**
+     * delete target node x (recursive)
+     *
+     * @param x number to delete
+     */
+    bool dewete(int x)
+    {
+        if (delete_from_node(root, x) == nullptr)
+            return false;
+        return true;
+    }
+
+    /**
+     * delete target node x (iteration)
+     *
+     * @param x number to delete
+     */
+    int dewete_iter(int x)
+    {
+        // parent node of node p
+        bst_node *F;
+        // current node; node to delete
+        bst_node *p;
+        // parent node of node k
+        bst_node *f;
+        // node to find inorder immediate node
+        bst_node *k;
+
+        // initial with root node
+        p = root;
+        // assumption parent node of root node is nullptr
+        F = nullptr;
+        while (p != nullptr)
+        {
+            // found
+            if (x == p->data)
+            {
+                // p is leaf
+                if (p->left == nullptr && p->right == nullptr)
+                    k = nullptr;
+                // left child node of p is exist
+                else if (p->left != nullptr)
+                {
+                    // find the most right node of p->left
+                    f = p;
+                    k = p->left;
+                    while (k->right != nullptr)
+                    {
+                        f = p;
+                        k = k->right;
+                    }
+                    // if p->left has only one child node
+                    if (f == p)
+                        f->left = k->left;
+                    else
+                        f->right = k->left;
+                }
+                // right child node of p is exist
+                else
+                {
+                    // find the most left node of p->right
+                    f = p;
+                    k = p->right;
+                    while (k->left != nullptr)
+                    {
+                        f = p;
+                        k = k->left;
+                    }
+                    // if p->right has only one child node
+                    if (f == p)
+                        f->right = k->right;
+                    else
+                        f->left = k->right;
+                }
+
+                // if k exist
+                if (k != nullptr)
+                {
+                    // replace p with k
+                    k->left = p->left;
+                    k->right = p->right;
+                }
+                // if parent node of p isn't exist
+                if (F == nullptr)
+                    root = k;
+                // left child of F is k
+                else if (x < F->data)
+                    F->left = k;
+                // right child of F is k
+                else
+                    F->right = k;
+
+                // free the pointer of p
+                delete p;
+                // x found and deleted
+                return 0;
+            }
+            else
+            {
+                F = p;
+                // keep search node which contains x
+                if (x < p->data)
+                    p = p->left;
+                else
+                    p = p->right;
+            }
+        }
+        // node x not found
+        return -1;
     }
 
     /**
@@ -207,6 +477,11 @@ public:
      */
     void print(int type)
     {
+        if (root == nullptr)
+        {
+            cout << "tree is empty" << endl;
+            return;
+        }
         switch (type)
         {
         case 0:
@@ -231,11 +506,14 @@ public:
 // signed main()
 // {
 //     BinarySearchTree tree = BinarySearchTree();
-//     tree.insert(20);
-//     tree.insert(30);
-//     tree.insert(10);
-//     tree.insert(40);
-//     tree.search(40);
-//     tree.search(50);
+//     tree.insert_iter(20);
+//     tree.insert_iter(30);
+//     tree.insert_iter(10);
+//     tree.insert_iter(40);
+//     cout << 40 << " " << (tree.search_iter(40) ? "found" : "not found") << endl;
+//     cout << 50 << " " << (tree.search_iter(50) ? "found" : "not found") << endl;
+//     tree.print(1);
+//     tree.dewete_iter(30);
+
 //     tree.print(1);
 // }

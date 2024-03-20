@@ -86,13 +86,14 @@ with c2:
             )
     else:
         input_target = st.number_input("target", min_value=0, max_value=2**31 - 1)
-    col1, col2, _, _ = st.columns([2, 2, 2, 5])
+    col1, col2, _, _ = st.columns([2, 2, 2, 9])
     with col1:
         btn_action = st.button(
             input_options_action.get(input_action),
             type="primary",
             use_container_width=True,
         )
+
     with col2:
         btn_empty = st.button(
             ":violet[清空 :bomb:]", type="secondary", use_container_width=True
@@ -109,15 +110,24 @@ bst = init_bst()
 
 def insert(num: int):
     bst.insert(num)
-    st.toast(f"number {num} inserted!")
+    st.toast(f"已新增 {num} 到二元樹中")
 
 
 def search(num: int):
     result = bst.search(num)
     if result:
-        st.info(f"number {num} founded.")
+        st.info(f"{num} 找到ㄌ")
     else:
-        st.error(f"number {num} not found!")
+        st.error(f"找不到 {num}!")
+        col1, col2, _ = st.columns([2, 2, 10])
+        col1.button(
+            f"新增 {num}",
+            on_click=insert,
+            kwargs={"num": num},
+            type="primary",
+            use_container_width=True,
+        )
+        col2.button("忽略", use_container_width=True)
 
 
 def empty():

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 using namespace std;
 
 class BinarySearchTree
@@ -11,15 +12,22 @@ private:
         bst_node *left;
         bst_node *right;
     };
-
     struct bst_stack_node
     {
         bst_stack_node *prev;
         bst_node *data;
     };
+    struct bst_queue_node
+    {
+        bst_queue_node *next;
+        bst_node *data;
+    };
 
     bst_node *root = nullptr;
     bst_stack_node *top = nullptr;
+    bst_queue_node *front = nullptr;
+    bst_queue_node *rear = nullptr;
+    stack<int> data_stack;
     bool first_node = true;
     bool allow_duplicated_node = false;
 
@@ -198,6 +206,39 @@ private:
     }
 
     /**
+     * performs an preorder traversal of a binary search tree.
+     *
+     * @param node a pointer to the root node of the binary search tree.
+     */
+    void preorder_traversal(bst_node *node)
+    {
+        if (node != nullptr)
+        {
+            cout << node->data << "_";
+            preorder_traversal(node->left);
+            preorder_traversal(node->right);
+        }
+    }
+
+    void preorder_traversal_stack(bst_node *node)
+    {
+        do
+        {
+            while (node != nullptr)
+            {
+                cout << node->data << "_";
+                push(node);
+                node = node->left;
+            }
+            if (top != nullptr)
+            {
+                node = pop();
+                node = node->right;
+            }
+        } while ((!stack_is_empty()) || node != nullptr);
+    }
+
+    /**
      * performs an inorder traversal of a binary search tree.
      *
      * @param node a pointer to the root node of the binary search tree.
@@ -210,6 +251,24 @@ private:
             cout << node->data << "_";
             inorder_traversal(node->right);
         }
+    }
+
+    void inorder_traversal_stack(bst_node *node)
+    {
+        do
+        {
+            while (node != nullptr)
+            {
+                push(node);
+                node = node->left;
+            }
+            if (!stack_is_empty())
+            {
+                node = pop();
+                cout << node->data << "_";
+                node = node->right;
+            }
+        } while ((!stack_is_empty()) || (node != nullptr));
     }
 
     /**
@@ -227,42 +286,107 @@ private:
         }
     }
 
-    /**
-     * performs an preorder traversal of a binary search tree.
-     *
-     * @param node a pointer to the root node of the binary search tree.
-     */
-    void preorder_traversal(bst_node *node)
+    void postorder_traversal_stack(bst_node *node)
+    {
+        do
+        {
+            while (node != nullptr)
+            {
+                data_stack.push(node->data);
+                push(node);
+                node = node->right;
+            }
+            if (!stack_is_empty())
+            {
+                node = pop();
+                node = node->left;
+            }
+        } while ((!stack_is_empty() || (node != nullptr)));
+        while (!data_stack.empty())
+        {
+            cout << data_stack.top() << "_";
+            data_stack.pop();
+        }
+    }
+
+    void levelorder_traversal(bst_node *node)
     {
         if (node != nullptr)
         {
-            cout << node->data << "_";
-            preorder_traversal(node->left);
-            preorder_traversal(node->right);
+            add(node);
+            while (!queue_is_empty())
+            {
+                node = retrieve();
+                cout << node->data << "_";
+                if (node->left != nullptr)
+                    add(node->left);
+                if (node->right != nullptr)
+                    add(node->right);
+            }
         }
     }
 
     bst_stack_node *push(bst_node *node)
     {
-        bst_stack_node *stack_node = new bst_stack_node();
-        stack_node->data = node;
         if (top == nullptr)
         {
             top = new bst_stack_node();
             top->data = nullptr;
             top->prev = nullptr;
         }
+        bst_stack_node *stack_node = new bst_stack_node();
+        stack_node->data = node;
         stack_node->prev = top;
         top = stack_node;
         return top;
     }
 
-    bst_stack_node *pop()
+    bst_node *pop()
     {
-        bst_stack_node *node = top;
-        delete top;
-        top = node->prev;
+        if (!stack_is_empty())
+        {
+            bst_stack_node *node_st = top;
+            bst_node *node = node_st->data;
+            top = top->prev;
+            delete node_st;
+            return node;
+        }
+        return nullptr;
+    }
+
+    bool stack_is_empty()
+    {
+        return top->prev == nullptr;
+    }
+
+    void add(bst_node *node)
+    {
+        bst_queue_node *queue_node = new bst_queue_node();
+        queue_node->data = node;
+        queue_node->next = nullptr;
+        if (front == nullptr)
+            front = queue_node;
+        else
+            rear->next = queue_node;
+        rear = queue_node;
+    }
+
+    bst_node *retrieve()
+    {
+        if (queue_is_empty())
+            return nullptr;
+        bst_queue_node *queue_node = front;
+        bst_node *node = queue_node->data;
+        if (front->next == nullptr)
+            rear = nullptr;
+        front = front->next;
+        delete queue_node;
         return node;
+    }
+
+    bool queue_is_empty()
+    {
+        return (front == rear) && (front == nullptr);
     }
 
 public:
@@ -475,7 +599,7 @@ public:
      *
      * @param type preorder -> 0, inorder -> 1, postorder -> 2
      */
-    void print(int type)
+    void print(int type, bool iterative = true)
     {
         if (root == nullptr)
         {
@@ -485,16 +609,29 @@ public:
         switch (type)
         {
         case 0:
-            cout << "preorder traversal..." << endl;
-            preorder_traversal(root);
+            cout << "preorder traversal... " << (iterative ? "(iteration)" : "(resursion)") << endl;
+            if (iterative)
+                preorder_traversal_stack(root);
+            else
+                preorder_traversal(root);
             break;
         case 1:
-            cout << "inorder traversal..." << endl;
-            inorder_traversal(root);
+            cout << "inorder traversal... " << (iterative ? "(iteration)" : "(resursion)") << endl;
+            if (iterative)
+                inorder_traversal_stack(root);
+            else
+                inorder_traversal(root);
             break;
         case 2:
-            cout << "postorder traversal..." << endl;
-            postorder_traversal(root);
+            cout << "postorder traversal... " << (iterative ? "(iteration)" : "(resursion)") << endl;
+            if (iterative)
+                postorder_traversal_stack(root);
+            else
+                postorder_traversal(root);
+            break;
+        case 3:
+            cout << "levelorder traversal..." << endl;
+            levelorder_traversal(root);
             break;
         default:
             break;
@@ -506,14 +643,26 @@ public:
 // signed main()
 // {
 //     BinarySearchTree tree = BinarySearchTree();
-//     tree.insert_iter(20);
-//     tree.insert_iter(30);
-//     tree.insert_iter(10);
-//     tree.insert_iter(40);
-//     cout << 40 << " " << (tree.search_iter(40) ? "found" : "not found") << endl;
-//     cout << 50 << " " << (tree.search_iter(50) ? "found" : "not found") << endl;
+//     tree.insert_iter(2);
+//     tree.insert_iter(3);
+//     tree.insert_iter(1);
+//     tree.insert_iter(4);
+//     tree.print(0);
+//     tree.print(0, false);
 //     tree.print(1);
-//     tree.dewete_iter(30);
+//     tree.print(1, false);
+//     tree.print(2);
+//     tree.print(2, false);
+//     tree.print(3);
 
-//     tree.print(1);
+//     bst_node *n1 = new bst_node();
+//     n1->data = 10;
+//     bst_node *n2 = new bst_node();
+//     n2->data = 20;
+//     tree.push(n1);
+//     tree.push(n2);
+//     tree.pop();
+//     tree.pop();
+//     if (tree.pop() == nullptr)
+//         cout << "ok" << endl;
 // }

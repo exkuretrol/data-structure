@@ -42,6 +42,7 @@ with c1:
             "preorder": "前序",
             "inorder": "中序",
             "postorder": "後序",
+            "levelorder": "階層",
         }
 
         output_action = st.radio(
@@ -94,7 +95,7 @@ with c2:
             )
     else:
         input_target = st.number_input("target", min_value=0, max_value=2**31 - 1)
-    col1, col2, _, _ = st.columns([2, 2, 2, 9])
+    col1, col2, _ = st.columns([2, 2, 9])
     with col1:
         btn_action = st.button(
             input_options_action.get(input_action),
@@ -167,8 +168,6 @@ def delete(num: int):
         result = bst.delete_iter(num)
         if result == -1:
             st.error(f"找不到 {num}! ({mode_options.get(mode)})")
-        else:
-            st.info(f"刪除了數字 {num} ({mode_options.get(mode)})")
             col1, col2, _ = st.columns([2, 2, 10])
             col1.button(
                 f"新增 {num}",
@@ -178,6 +177,8 @@ def delete(num: int):
                 use_container_width=True,
             )
             col2.button("忽略", use_container_width=True)
+        else:
+            st.info(f"刪除了數字 {num} ({mode_options.get(mode)})")
 
 
 def empty():
@@ -208,8 +209,10 @@ code = st.code(language="css", body="", line_numbers=True)
 if st.session_state.toggled:
     with rd.stdout(to=code):
         if output_action == "preorder":
-            bst.print(0)
+            bst.print(0, mode == "iteration")
         elif output_action == "inorder":
-            bst.print(1)
+            bst.print(1, mode == "iteration")
+        elif output_action == "postorder":
+            bst.print(2, mode == "iteration")
         else:
-            bst.print(2)
+            bst.print(3, mode == "iteration")

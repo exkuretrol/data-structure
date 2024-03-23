@@ -86,7 +86,7 @@ with c2:
             )
     else:
         input_target = st.number_input("target", min_value=0, max_value=2**31 - 1)
-    col1, col2, _, _ = st.columns([2, 2, 2, 9])
+    col1, col2, _ = st.columns([2, 2, 10])
     with col1:
         btn_action = st.button(
             action_options.get(input_action),
@@ -138,6 +138,15 @@ def delete(num: int):
         st.info(f"刪除了數字 {num}")
     else:
         st.error(f"找不到 {num}!")
+        col1, col2, _ = st.columns([2, 2, 9])
+        col1.button(
+            f"新增 {num}",
+            on_click=insert,
+            kwargs={"num": num},
+            type="primary",
+            use_container_width=True,
+        )
+        col2.button("忽略", use_container_width=True)
 
 
 def empty():
@@ -168,8 +177,8 @@ code = st.code(language="css", body="", line_numbers=True)
 if st.session_state.toggled:
     with rd.stdout(to=code):
         if output_action == "preorder":
-            bst.print(0)
+            bst.print(0, False)
         elif output_action == "inorder":
-            bst.print(1)
+            bst.print(1, False)
         else:
-            bst.print(2)
+            bst.print(2, False)

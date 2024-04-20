@@ -88,14 +88,29 @@ PYBIND11_MODULE(homework, m)
         .def("print_nodes", &LinkedStack::print_nodes, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
         .def("print_detailed_nodes", &LinkedStack::print_detailed_nodes, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
 
-    py::class_<BinarySearchTree>(m, "BinarySearchTree")
+    py::class_<BinarySearchTree<int>>(m, "BinarySearchTreeInt")
         .def(py::init<>())
-        .def("search", &BinarySearchTree::search)
-        .def("search_iter", &BinarySearchTree::search_iter)
-        .def("insert", &BinarySearchTree::insert)
-        .def("insert_iter", &BinarySearchTree::insert_iter)
-        .def("delete", &BinarySearchTree::dewete)
-        .def("delete_iter", &BinarySearchTree::dewete_iter)
-        .def("empty", &BinarySearchTree::empty)
-        .def("print", &BinarySearchTree::print, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
+        .def("search", &BinarySearchTree<int>::search)
+        .def("search_iter", &BinarySearchTree<int>::search_iter)
+        .def("insert", &BinarySearchTree<int>::insert)
+        .def("insert_iter", &BinarySearchTree<int>::insert_iter)
+        .def("delete", &BinarySearchTree<int>::dewete)
+        .def("delete_iter", &BinarySearchTree<int>::dewete_iter)
+        .def("empty", &BinarySearchTree<int>::empty)
+        .def("print", &BinarySearchTree<int>::print, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
+        .def("construct_infix_prefix", &BinarySearchTree<int>::construct_infix_prefix)
+        .def("construct_infix_postfix", &BinarySearchTree<int>::construct_infix_postfix);
+
+    py::class_<BinarySearchTree<char>>(m, "BinarySearchTreeChar")
+        .def(py::init<>())
+        .def("search", &BinarySearchTree<char>::search)
+        .def("search_iter", &BinarySearchTree<char>::search_iter)
+        .def("insert", &BinarySearchTree<char>::insert)
+        .def("insert_iter", &BinarySearchTree<char>::insert_iter)
+        .def("delete", &BinarySearchTree<char>::dewete)
+        .def("delete_iter", &BinarySearchTree<char>::dewete_iter)
+        .def("empty", &BinarySearchTree<char>::empty)
+        .def("print", &BinarySearchTree<char>::print, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
+        .def("construct_infix_prefix", &BinarySearchTree<char>::construct_infix_prefix)
+        .def("construct_infix_postfix", &BinarySearchTree<char>::construct_infix_postfix);
 }

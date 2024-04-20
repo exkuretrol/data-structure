@@ -1,14 +1,17 @@
 #include <iostream>
+#include <vector>
 #include <stack>
 using namespace std;
 
+template <typename T>
 class BinarySearchTree
 {
+    // TODO: allow / disallow duplicated mode
 
 private:
     struct bst_node
     {
-        int data;
+        T data;
         bst_node *left;
         bst_node *right;
     };
@@ -27,9 +30,13 @@ private:
     bst_stack_node *top = nullptr;
     bst_queue_node *front = nullptr;
     bst_queue_node *rear = nullptr;
-    stack<int> data_stack;
+    stack<T> data_stack;
     bool first_node = true;
     bool allow_duplicated_node = false;
+
+    vector<T> infix_elements;
+    vector<T> prefix_elements;
+    vector<T> postfix_elements;
 
     /**
      * create a new binary search tree node.
@@ -37,7 +44,7 @@ private:
      * @param x the data of the node.
      * @return A pointer to the created binary search tree node.
      */
-    bst_node *new_node(int x)
+    bst_node *new_node(T x)
     {
         bst_node *node = new bst_node();
         node->data = x;
@@ -52,7 +59,7 @@ private:
      * @param x the data of root node
      * @return a pointer to root node
      */
-    bst_node *create_root_node(int x)
+    bst_node *create_root_node(T x)
     {
         first_node = false;
         root = new_node(x);
@@ -65,7 +72,7 @@ private:
      * @param node provided root node of binary search tree
      * @param x node data
      */
-    bst_node *insert_new_node(bst_node *node, int x)
+    bst_node *insert_new_node(bst_node *node, T x)
     {
         if (node == nullptr)
             return new_node(x);
@@ -83,7 +90,7 @@ private:
      * @param x the number to search
      * @return binary tree node pointer or nullptr
      */
-    bst_node *search_from_node(bst_node *node, int x)
+    bst_node *search_from_node(bst_node *node, T x)
     {
         if (node == nullptr)
             return nullptr;
@@ -102,7 +109,7 @@ private:
      * @param x the number to search
      * @return binary tree node pointer or nullptr
      */
-    bst_node *search_from_node_iter(bst_node *node, int x)
+    bst_node *search_from_node_iter(bst_node *node, T x)
     {
         while (node != nullptr)
         {
@@ -134,7 +141,7 @@ private:
      *
      * @param x search node x
      */
-    bst_node *delete_from_node(bst_node *node, int x)
+    bst_node *delete_from_node(bst_node *node, T x)
     {
         bst_node *temp;
         // target node contain data x not found
@@ -389,6 +396,73 @@ private:
         return (front == rear) && (front == nullptr);
     }
 
+    vector<T> sub_elements(vector<T> v, int start, int length)
+    {
+        typename vector<T>::iterator new_start_pointer = v.begin() + start;
+        return std::vector<T>(new_start_pointer, new_start_pointer + length);
+    }
+
+    int find_pos(vector<T> v, int x)
+    {
+        typename vector<T>::iterator it = find(v.begin(), v.end(), x);
+        if (it != v.end())
+            return it - v.begin();
+        else
+            return -1;
+    }
+
+    void set_elements_from_vector(vector<T> &input, string order)
+    {
+        if (order == "infix")
+            this->infix_elements = input;
+        else if (order == "prefix")
+            this->prefix_elements = input;
+        else if (order == "postfix")
+            this->postfix_elements = input;
+    }
+
+    bst_node *construct_bst_from_infix_prefix(vector<T> infix, vector<T> prefix)
+    {
+        if (infix.size() == 0)
+            return nullptr;
+        else
+        {
+            T root_node_data = *prefix.begin();
+            bst_node *node = new_node(root_node_data);
+            if (root == nullptr)
+                root = node;
+            int k = find_pos(infix, root_node_data);
+            node->left = construct_bst_from_infix_prefix(
+                sub_elements(infix, 0, k),
+                sub_elements(prefix, 1, k));
+            node->right = construct_bst_from_infix_prefix(
+                sub_elements(infix, k + 1, infix.size() - (k + 1)),
+                sub_elements(prefix, k + 1, prefix.size() - (k + 1)));
+            return node;
+        }
+    }
+
+    bst_node *construct_bst_from_infix_postfix(vector<T> infix, vector<T> postfix)
+    {
+        if (infix.size() == 0)
+            return nullptr;
+        else
+        {
+            T root_node_data = *(postfix.end() - 1);
+            bst_node *node = new_node(root_node_data);
+            if (root == nullptr)
+                root = node;
+            int k = find_pos(infix, root_node_data);
+            node->left = construct_bst_from_infix_postfix(
+                sub_elements(infix, 0, k),
+                sub_elements(postfix, 0, k));
+            node->right = construct_bst_from_infix_postfix(
+                sub_elements(infix, k + 1, infix.size() - (k + 1)),
+                sub_elements(postfix, k, postfix.size() - (k + 1)));
+            return node;
+        }
+    }
+
 public:
     /**
      * Binary search tree constructor.
@@ -405,13 +479,23 @@ public:
         postorder_traversal_delete(root);
     }
 
+    void construct_infix_prefix(vector<T> &infix, vector<T> &prefix)
+    {
+        construct_bst_from_infix_prefix(infix, prefix);
+    }
+
+    void construct_infix_postfix(vector<T> &infix, vector<T> &postfix)
+    {
+        construct_bst_from_infix_postfix(infix, postfix);
+    }
+
     /**
      * search binary search tree by the given number
      *
      * @param x target number
      * @return founded or not
      */
-    bool search(int x)
+    bool search(T x)
     {
         if (search_from_node(root, x) == nullptr)
             return false;
@@ -419,7 +503,7 @@ public:
         return true;
     }
 
-    bool search_iter(int x)
+    bool search_iter(T x)
     {
         if (search_from_node_iter(root, x) == nullptr)
             return false;
@@ -432,7 +516,7 @@ public:
      *
      * @param x the data of new node
      */
-    void insert(int x)
+    void insert(T x)
     {
         if (root == nullptr)
             create_root_node(x);
@@ -447,7 +531,7 @@ public:
      *
      * @param x the data of new node
      */
-    int insert_iter(int x)
+    int insert_iter(T x)
     {
         // parent
         bst_node *p = nullptr;
@@ -478,7 +562,7 @@ public:
      *
      * @param x number to delete
      */
-    bool dewete(int x)
+    bool dewete(T x)
     {
         if (delete_from_node(root, x) == nullptr)
             return false;
@@ -490,7 +574,7 @@ public:
      *
      * @param x number to delete
      */
-    int dewete_iter(int x)
+    int dewete_iter(T x)
     {
         // parent node of node p
         bst_node *F;
@@ -642,11 +726,18 @@ public:
 
 // signed main()
 // {
-//     BinarySearchTree tree = BinarySearchTree();
-//     tree.insert_iter(2);
-//     tree.insert_iter(3);
-//     tree.insert_iter(1);
-//     tree.insert_iter(4);
+//     BinarySearchTree<char> tree = BinarySearchTree<char>();
+//     vector<char> prefix = {'A', 'B', 'H', 'J', 'C', 'D', 'F', 'G', 'E'};
+//     vector<char> infix = {'H', 'B', 'J', 'A', 'F', 'D', 'G', 'C', 'E'};
+//     vector<char> postfix = {'H', 'J', 'B', 'F', 'G', 'D', 'E', 'C', 'A'};
+//     // tree.construct_bst_from_infix_prefix(infix, prefix);
+//     tree.construct_bst_from_infix_postfix(infix, postfix);
+//     // tree.insert_iter(2);
+//     // tree.insert_iter(3);
+//     // tree.dewete_iter(3);
+//     // tree.insert_iter(1);
+//     // tree.insert_iter(4);
+
 //     tree.print(0);
 //     tree.print(0, false);
 //     tree.print(1);
@@ -654,15 +745,4 @@ public:
 //     tree.print(2);
 //     tree.print(2, false);
 //     tree.print(3);
-
-//     bst_node *n1 = new bst_node();
-//     n1->data = 10;
-//     bst_node *n2 = new bst_node();
-//     n2->data = 20;
-//     tree.push(n1);
-//     tree.push(n2);
-//     tree.pop();
-//     tree.pop();
-//     if (tree.pop() == nullptr)
-//         cout << "ok" << endl;
 // }

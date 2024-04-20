@@ -1,7 +1,7 @@
 import random
 
 import streamlit as st
-from homework import BinarySearchTree
+from homework import BinarySearchTreeInt
 
 import redirect as rd
 from menu import menu_with_redirect
@@ -111,7 +111,7 @@ with c2:
 
 @st.cache_resource
 def init_bst():
-    return BinarySearchTree()
+    return BinarySearchTreeInt()
 
 
 bst = init_bst()

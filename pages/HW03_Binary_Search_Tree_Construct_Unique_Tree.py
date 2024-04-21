@@ -135,10 +135,11 @@ with c2:
         if input_method == "manual":
             if data == "int":
                 input_data = st.number_input("int", min_value=0, max_value=2**31 - 1)
-                sidebar_text_list.append("`int`：輸入二元樹的數字。")
             else:
                 input_data = st.text_input("char", max_chars=1)
-                sidebar_text_list.append("`char`：輸入二元樹的字元。")
+            sidebar_text_list.append(
+                f"`{data}`：輸入二元樹的{data_options.get(data)}。"
+            )
 
         else:
             col1, col2 = st.columns([1, 3], gap="medium")
@@ -162,9 +163,13 @@ with c2:
                 else:
                     pass
     elif input_action in ["search", "delete"]:
-        input_target = st.number_input("target", min_value=0, max_value=2**31 - 1)
+        if data == "int":
+            input_target = st.number_input("target", min_value=0, max_value=2**31 - 1)
+        elif data == "char":
+            input_target = st.text_input("target", max_chars=1)
+
         sidebar_text_list.append(
-            f"`target`：欲{input_options_action.get(input_action)}的數字"
+            f"`target`：欲{input_options_action.get(input_action)}的{data_options.get(data)}"
         )
 
     else:
@@ -262,59 +267,63 @@ def insert(input_data: int | str):
     st.toast(f"已新增 {input_data} 到二元樹中 ({mode_options.get(mode)})")
 
 
-def search(num: int):
+def search(target: int):
     if mode == "recursion":
-        result = get_current_tree().search(num)
+        result = get_current_tree().search(target)
     else:
-        result = get_current_tree().search_iter(num)
+        result = get_current_tree().search_iter(target)
 
     if result:
-        st.info(f"{num} 找到ㄌ ({mode_options.get(mode)})")
+        st.info(f"{target} 找到ㄌ ({mode_options.get(mode)})")
     else:
-        st.error(f"找不到 {num}! ({mode_options.get(mode)})")
+        st.error(f"找不到 {target}! ({mode_options.get(mode)})")
         col1, col2, _ = st.columns([2, 2, 10])
         col1.button(
-            f"新增 {num}",
+            f"新增 {target}",
             on_click=insert,
-            kwargs={"num": num},
+            kwargs={"input_data": target},
             type="primary",
             use_container_width=True,
         )
         col2.button("忽略", use_container_width=True)
 
 
-def delete(num: int):
+def delete(target: int):
     if mode == "recursion":
-        result = bst.search(num)
+        result = get_current_tree().search(target)
         if result:
-            bst.delete(num)
-            st.info(f"刪除了數字 {num} ({mode_options.get(mode)})")
+            get_current_tree().delete(target)
+            st.info(
+                f"刪除了{data_options.get(data)} {target} ({mode_options.get(mode)})"
+            )
         else:
-            st.error(f"找不到 {num}! ({mode_options.get(mode)})")
+            st.error(f"找不到 {target}! ({mode_options.get(mode)})")
             col1, col2, _ = st.columns([2, 2, 10])
             col1.button(
-                f"新增 {num}",
+                f"新增 {target}",
                 on_click=insert,
-                kwargs={"num": num},
+                kwargs={"input_data": target},
                 type="primary",
                 use_container_width=True,
             )
             col2.button("忽略", use_container_width=True)
     else:
-        result = bst.delete_iter(num)
+        result = get_current_tree().delete_iter(target)
         if result == -1:
-            st.error(f"找不到 {num}! ({mode_options.get(mode)})")
+            st.error(f"找不到 {target}! ({mode_options.get(mode)})")
             col1, col2, _ = st.columns([2, 2, 10])
             col1.button(
-                f"新增 {num}",
+                f"新增 {target}",
                 on_click=insert,
-                kwargs={"num": num},
+                kwargs={"input_data": target},
                 type="primary",
                 use_container_width=True,
             )
             col2.button("忽略", use_container_width=True)
         else:
-            st.info(f"刪除了數字 {num} ({mode_options.get(mode)})")
+            st.info(
+                f"刪除了{data_options.get(data)} {target} ({mode_options.get(mode)})"
+            )
 
 
 def empty():

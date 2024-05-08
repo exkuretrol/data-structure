@@ -71,6 +71,11 @@ def algorithm_menu():
         label="HW 03 二元搜尋樹 建構樹",
         icon="🎄",
     )
+    st.sidebar.page_link(
+        page=construct_page_path("HW04_Heap.py"),
+        label="HW 04 堆積",
+        icon="🔺",
+    )
 
 
 subject_options = {"data_structure": "資料結構", "algorithm": "演算法"}

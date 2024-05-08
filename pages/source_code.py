@@ -198,5 +198,21 @@ else:
             with open("pages/HW03_Binary_Search_Tree_Construct_Unique_Tree.py") as f:
                 src = f.read()
             st.code(src)
+    elif hw == "hw4":
+        tab0, tab1, tab2 = st.tabs(["main.cpp", "heap.hpp", "HW04_Heap.py"])
+        with tab0:
+            with open("src/main.cpp") as f:
+                src = f.read()
+            st.code(src, language="cpp")
+
+        with tab1:
+            with open("src/heap.hpp") as f:
+                src = f.read()
+            st.code(src, language="cpp")
+
+        with tab2:
+            with open("pages/HW04_Heap.py") as f:
+                src = f.read()
+            st.code(src)
     else:
         st.write("還沒寫完")

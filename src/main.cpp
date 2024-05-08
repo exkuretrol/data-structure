@@ -6,6 +6,7 @@
 #include "doubly-circular-linked-list.hpp"
 #include "linked-stack.hpp"
 #include "binary-search-tree.hpp"
+#include "heap.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
@@ -113,4 +114,11 @@ PYBIND11_MODULE(homework, m)
         .def("print", &BinarySearchTree<char>::print, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
         .def("construct_infix_prefix", &BinarySearchTree<char>::construct_infix_prefix)
         .def("construct_infix_postfix", &BinarySearchTree<char>::construct_infix_postfix);
+
+    py::class_<Heap>(m, "Heap")
+        .def(py::init<int>())
+        .def("insert_heap", &Heap::insert_heap)
+        .def("delete_heap", &Heap::delete_heap)
+        .def("get_n", &Heap::get_n)
+        .def("print", &Heap::print, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
 }

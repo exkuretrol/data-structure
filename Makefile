@@ -22,4 +22,4 @@ clean:
 	@rm -rf dist homework.egg-info include build
 
 run:
-	@streamlit run app.py
+	@streamlit run app.py --server.headless true

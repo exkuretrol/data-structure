@@ -88,14 +88,14 @@ with c1:
     )
     input_method_options = {
         "random": "隨機產生",
-        "manual": "手動設定",
+        # "manual": "手動設定",
         "predefined": "讀取範例",
     }
     input_method = st.radio(
         "method",
         input_method_options,
         format_func=lambda x: input_method_options.get(x),
-        index=2,
+        index=1,
         horizontal=True,
     )
     sidebar_text_list.append(f"`wall`：被當作牆壁的數字，所有有效數值應該小於它。")
@@ -130,16 +130,16 @@ with c2:
         sidebar_text_list.append(
             f"`directed`：是否為有向圖，如果開關打開圖為有向，反之為無向圖。"
         )
-    elif input_method == "manual":
-        st.info(
-            """
-        點兩下想編輯的框框後輸入數字，按 Enter 即可儲存。
-        """,
-            icon="💡",
-        )
-        m = get_matrix("weight")
-        edited_m = st.data_editor(m)
-        set_matrix(edited_m)
+    # elif input_method == "manual":
+    #     st.info(
+    #         """
+    #     點兩下想編輯的框框後輸入數字，按 Enter 即可儲存。
+    #     """,
+    #         icon="💡",
+    #     )
+    #     m = get_matrix("weight")
+    #     edited_m = st.data_editor(m)
+    #     set_matrix(edited_m)
     elif input_method == "predefined":
         st.info(
             """

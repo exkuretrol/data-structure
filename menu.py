@@ -76,6 +76,11 @@ def algorithm_menu():
         label="HW 04 堆積",
         icon="🔺",
     )
+    st.sidebar.page_link(
+        page=construct_page_path("HW05_Shortest_Path.py"),
+        label="HW 05 最短路徑",
+        icon="🛣️",
+    )
 
 
 subject_options = {"data_structure": "資料結構", "algorithm": "演算法"}

@@ -124,15 +124,15 @@ PYBIND11_MODULE(homework, m)
         .def("print", &Heap::print, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
 
     py::class_<ShortestPath>(m, "ShortestPath")
-        .def(py::init<int, int, int, int>(), py::arg("size") = 6, py::arg("range") = 1000, py::arg("threshold") = 1000, py::arg("wall") = 99999)
+        .def(py::init<int>(), py::arg("size"))
         .def("set_wall", &ShortestPath::set_wall)
         .def("set_range", &ShortestPath::set_range)
         .def("set_threshold", &ShortestPath::set_threshold)
-        .def("toggle_directed", &ShortestPath::toggle_directed)
-        .def("get_directed", &ShortestPath::get_directed)
+        .def("set_directed", &ShortestPath::set_directed)
         .def("random_weight_matrix", &ShortestPath::random_weight_matrix)
         .def("dynamic_programming", &ShortestPath::dynamic_programming)
         .def("trace_all_paths", &ShortestPath::trace_all_paths, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
         .def("get_matrix", &ShortestPath::get_matrix)
+        .def("set_matrix", &ShortestPath::set_matrix)
         .def("print", &ShortestPath::print, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
 }

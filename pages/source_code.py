@@ -214,5 +214,23 @@ else:
             with open("pages/HW04_Heap.py") as f:
                 src = f.read()
             st.code(src)
+    elif hw == "hw5":
+        tab0, tab1, tab2 = st.tabs(
+            ["main.cpp", "shortest-path.hpp", "HW05_Shortest_Path.py"]
+        )
+        with tab0:
+            with open("src/main.cpp") as f:
+                src = f.read()
+            st.code(src, language="cpp")
+
+        with tab1:
+            with open("src/shortest-path.hpp") as f:
+                src = f.read()
+            st.code(src, language="cpp")
+
+        with tab2:
+            with open("pages/HW05_Shortest_Path.py") as f:
+                src = f.read()
+            st.code(src)
     else:
         st.write("還沒寫完")

@@ -9,11 +9,12 @@ class ShortestPath
 {
 private:
     int n;
-    int range;
-    int threshold;
+    int range = 1000;
+    int threshold = 1000;
     int wall = 99999;
     bool directed = false;
     vector<vector<int>> W;
+    vector<vector<int>> OW;
     vector<vector<int>> A;
     vector<vector<int>> E;
     vector<vector<int>> TC;
@@ -169,7 +170,7 @@ private:
     }
 
 public:
-    ShortestPath(int size = 6, int range = 1000, int threshold = 1000, int wall = 99999) : n(size), range(range), threshold(threshold), wall(wall), W(size, vector<int>(size)), A(size, vector<int>(size)), E(size, vector<int>(size)), TC(size, vector<int>(size)), found(size), D(size), C(size)
+    ShortestPath(int size = 6) : n(size), W(size, vector<int>(size)), OW(size, vector<int>(size)), A(size, vector<int>(size)), E(size, vector<int>(size)), TC(size, vector<int>(size)), found(size), D(size), C(size)
     {
         srand(time(nullptr));
     }
@@ -184,8 +185,12 @@ public:
         wall = w;
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
+            {
                 if (W[i][j] == p_wall)
                     W[i][j] = wall;
+                if (OW[i][j] == p_wall)
+                    OW[i][j] = wall;
+            }
     }
 
     void set_range(int r)
@@ -195,6 +200,7 @@ public:
 
     void set_threshold(int t)
     {
+        W = OW;
         threshold = t;
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
@@ -203,15 +209,9 @@ public:
         update_matrix();
     }
 
-    void toggle_directed()
+    void set_directed(bool b)
     {
-        directed = not directed;
-        random_weight_matrix();
-    }
-
-    bool get_directed()
-    {
-        return directed;
+        directed = b;
     }
 
     void random_weight_matrix()
@@ -223,7 +223,8 @@ public:
                 if (i == j)
                     continue;
                 int num = rand() % range + 1;
-                W[i][j] = num > threshold ? wall : num;
+                num = num > threshold ? wall : num;
+                W[i][j] = num;
                 W[j][i] = num;
             }
             if (directed)
@@ -231,11 +232,13 @@ public:
                 for (int j = 0; j < i; j++)
                 {
                     int num = rand() % range + 1;
-                    W[i][j] = num > threshold ? wall : num;
+                    num = num > threshold ? wall : num;
+                    W[i][j] = num;
                 }
             }
             W[i][i] = 0;
         }
+        OW = W;
         update_matrix();
     }
 
@@ -272,6 +275,12 @@ public:
         else if (m == "transitive closure")
             return this->TC;
         return vector<vector<int>>();
+    }
+
+    void set_matrix(vector<vector<int>> &M)
+    {
+        W = M;
+        update_matrix();
     }
 
     void print()

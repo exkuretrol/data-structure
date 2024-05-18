@@ -88,7 +88,7 @@ with c1:
     )
     input_method_options = {
         "random": "隨機產生",
-        # "manual": "手動設定",
+        "manual": "手動設定",
         "predefined": "讀取範例",
     }
     input_method = st.radio(
@@ -130,16 +130,16 @@ with c2:
         sidebar_text_list.append(
             f"`directed`：是否為有向圖，如果開關打開圖為有向，反之為無向圖。"
         )
-    # elif input_method == "manual":
-    #     st.info(
-    #         """
-    #     點兩下想編輯的框框後輸入數字，按 Enter 即可儲存。
-    #     """,
-    #         icon="💡",
-    #     )
-    #     m = get_matrix("weight")
-    #     edited_m = st.data_editor(m)
-    #     set_matrix(edited_m)
+    elif input_method == "manual":
+        st.info(
+            """
+        點兩下想編輯的框框後輸入數字，按 Enter 即可儲存。
+        """,
+            icon="💡",
+        )
+        m = get_matrix("weight")
+        edited_m = st.data_editor(m)
+        set_matrix(edited_m)
     elif input_method == "predefined":
         st.info(
             """
@@ -187,33 +187,33 @@ tab_a, tab_aa, tab_b, tab_c, tab_d, tab_e = st.tabs(
     ]
 )
 
-# with tab_a:
-#     code = st.code(language="css", body="", line_numbers=True)
-#     with rd.stdout(to=code):
-#         sp.print()
+with tab_a:
+    code = st.code(language="css", body="", line_numbers=True)
+    with rd.stdout(to=code):
+        sp.print()
 
-# with tab_aa:
-#     code = st.code(language="css", body="", line_numbers=True)
-#     with rd.stdout(to=code):
-#         sp.trace_all_paths()
+with tab_aa:
+    code = st.code(language="css", body="", line_numbers=True)
+    with rd.stdout(to=code):
+        sp.trace_all_paths()
 
-# with tab_b:
-#     m = get_matrix("weight")
-#     st.dataframe(m)
+with tab_b:
+    m = get_matrix("weight")
+    st.dataframe(m)
 
-# with tab_c:
-#     m = get_matrix("distance")
-#     st.dataframe(m)
+with tab_c:
+    m = get_matrix("distance")
+    st.dataframe(m)
 
-# with tab_d:
-#     w = getattr(st.session_state, "wall", 99999)
-#     st.warning(f"數字 {w} 代表沒有辦法通過，或者斷路。", icon="‼️")
-#     m = get_matrix("vertex")
-#     st.dataframe(m)
+with tab_d:
+    w = getattr(st.session_state, "wall", 99999)
+    st.warning(f"數字 {w} 代表沒有辦法通過，或者斷路。", icon="‼️")
+    m = get_matrix("vertex")
+    st.dataframe(m)
 
-# with tab_e:
-#     st.warning(f"數字 0 代表沒有辦法通過", icon="‼️")
-#     m = get_matrix("transitive closure")
-#     st.dataframe(m)
+with tab_e:
+    st.warning(f"數字 0 代表沒有辦法通過", icon="‼️")
+    m = get_matrix("transitive closure")
+    st.dataframe(m)
 
 st.sidebar.markdown("\n\n".join(sidebar_text_list))

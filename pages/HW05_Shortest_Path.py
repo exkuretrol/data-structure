@@ -187,33 +187,33 @@ tab_a, tab_aa, tab_b, tab_c, tab_d, tab_e = st.tabs(
     ]
 )
 
-with tab_a:
-    code = st.code(language="css", body="", line_numbers=True)
-    with rd.stdout(to=code):
-        sp.print()
+# with tab_a:
+#     code = st.code(language="css", body="", line_numbers=True)
+#     with rd.stdout(to=code):
+#         sp.print()
 
-with tab_aa:
-    code = st.code(language="css", body="", line_numbers=True)
-    with rd.stdout(to=code):
-        sp.trace_all_paths()
+# with tab_aa:
+#     code = st.code(language="css", body="", line_numbers=True)
+#     with rd.stdout(to=code):
+#         sp.trace_all_paths()
 
-with tab_b:
-    m = get_matrix("weight")
-    st.dataframe(m)
+# with tab_b:
+#     m = get_matrix("weight")
+#     st.dataframe(m)
 
-with tab_c:
-    m = get_matrix("distance")
-    st.dataframe(m)
+# with tab_c:
+#     m = get_matrix("distance")
+#     st.dataframe(m)
 
-with tab_d:
-    w = getattr(st.session_state, "wall", 99999)
-    st.warning(f"數字 {w} 代表沒有辦法通過，或者斷路。", icon="‼️")
-    m = get_matrix("vertex")
-    st.dataframe(m)
+# with tab_d:
+#     w = getattr(st.session_state, "wall", 99999)
+#     st.warning(f"數字 {w} 代表沒有辦法通過，或者斷路。", icon="‼️")
+#     m = get_matrix("vertex")
+#     st.dataframe(m)
 
-with tab_e:
-    st.warning(f"數字 0 代表沒有辦法通過", icon="‼️")
-    m = get_matrix("transitive closure")
-    st.dataframe(m)
+# with tab_e:
+#     st.warning(f"數字 0 代表沒有辦法通過", icon="‼️")
+#     m = get_matrix("transitive closure")
+#     st.dataframe(m)
 
 st.sidebar.markdown("\n\n".join(sidebar_text_list))

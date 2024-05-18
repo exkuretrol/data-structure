@@ -95,7 +95,7 @@ with c1:
         "method",
         input_method_options,
         format_func=lambda x: input_method_options.get(x),
-        index=1,
+        index=2,
         horizontal=True,
     )
     sidebar_text_list.append(f"`wall`：被當作牆壁的數字，所有有效數值應該小於它。")

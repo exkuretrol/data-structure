@@ -17,7 +17,7 @@ sidebar_text_list.append("---")
 c1 = st.container(border=True)
 c2 = st.container(border=True)
 
-input_size = c1.number_input("size", min_value=2, max_value=100, value=8)
+input_size = c1.number_input("size", min_value=2, max_value=100, value=8, disabled=True)
 sidebar_text_list.append(f"`size`：鄰接矩陣大小。")
 
 

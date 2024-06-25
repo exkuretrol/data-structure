@@ -8,6 +8,7 @@
 #include "binary-search-tree.hpp"
 #include "heap.hpp"
 #include "shortest-path.hpp"
+#include "sort.hpp"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/iostream.h>
@@ -135,4 +136,13 @@ PYBIND11_MODULE(homework, m)
         .def("get_matrix", &ShortestPath::get_matrix)
         .def("set_matrix", &ShortestPath::set_matrix)
         .def("print", &ShortestPath::print, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
+
+    py::class_<Sort>(m, "Sort")
+        .def(py::init<int, int>(), py::arg("n") = 1000, py::arg("times") = 10)
+        .def("set_n", &Sort::set_n)
+        .def("set_execution_times", &Sort::set_execution_times)
+        .def("set_range", &Sort::set_range)
+        .def("set_sort_alg_active_list", &Sort::set_sort_alg_active_list)
+        .def("execution_sort", &Sort::execution_sort)
+        .def("get_time_it_table", &Sort::get_time_it_table);
 }

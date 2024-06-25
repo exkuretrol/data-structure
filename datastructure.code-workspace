@@ -6,6 +6,7 @@
     ],
     "settings": {
         "files.associations": {
+            "*.html": "html",
             "*.embeddedhtml": "html",
             "*.twig": "html",
             "*.css": "tailwindcss",
@@ -65,7 +66,21 @@
             "typeinfo": "cpp",
             "unordered_map": "cpp",
             "variant": "cpp",
-            "algorithm": "cpp"
+            "algorithm": "cpp",
+            "__tree": "cpp",
+            "cinttypes": "cpp",
+            "deque": "cpp",
+            "execution": "cpp",
+            "forward_list": "cpp",
+            "fstream": "cpp",
+            "list": "cpp",
+            "map": "cpp",
+            "queue": "cpp",
+            "set": "cpp",
+            "stack": "cpp",
+            "typeindex": "cpp",
+            "unordered_set": "cpp",
+            "valarray": "cpp"
         },
 
         "editor.formatOnSave": true,

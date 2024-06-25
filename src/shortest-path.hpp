@@ -16,20 +16,13 @@ private:
     vector<vector<int>> W;
     vector<vector<int>> OW;
     vector<vector<int>> A;
+    vector<vector<int>> AA;
     vector<vector<int>> E;
     vector<vector<int>> TC;
+    vector<vector<int>> EE;
     vector<bool> found;
     vector<int> D;
     vector<int> C;
-    // vector<vector<int>> W = {
-    //     {0, wall, wall, wall, wall, wall, wall, wall},
-    //     {300, 0, wall, wall, wall, wall, wall, wall},
-    //     {1000, 800, 0, wall, wall, wall, wall, wall},
-    //     {wall, wall, 1200, 0, wall, wall, wall, wall},
-    //     {wall, wall, wall, 1500, 0, 250, wall, wall},
-    //     {wall, wall, wall, 1000, wall, 0, 900, 1400},
-    //     {wall, wall, wall, wall, wall, wall, 0, 1000},
-    //     {1700, wall, wall, wall, wall, wall, wall, 0}};
     // vector<vector<int>> W = {
     //     {0, 1, wall, wall, wall, wall},
     //     {wall, 0, 1, wall, wall, wall},
@@ -163,20 +156,34 @@ private:
                 }
     }
 
-    void update_matrix()
-    {
-        all_dijkstra();
-        transitive_closure();
-    }
-
 public:
-    ShortestPath(int size = 6) : n(size), W(size, vector<int>(size)), OW(size, vector<int>(size)), A(size, vector<int>(size)), E(size, vector<int>(size)), TC(size, vector<int>(size)), found(size), D(size), C(size)
+    ShortestPath(int size = 6) : n(size), W(size, vector<int>(size)), OW(size, vector<int>(size)), A(size, vector<int>(size)), AA(size, vector<int>(size)), E(size, vector<int>(size)), TC(size, vector<int>(size)), EE(size, vector<int>(size)), found(size), D(size), C(size)
     {
         srand(time(nullptr));
+        // W = {
+        //     {0, wall, wall, wall, wall, wall, wall, wall},
+        //     {300, 0, wall, wall, wall, wall, wall, wall},
+        //     {1000, 800, 0, wall, wall, wall, wall, wall},
+        //     {wall, wall, 1200, 0, wall, wall, wall, wall},
+        //     {wall, wall, wall, 1500, 0, 250, wall, wall},
+        //     {wall, wall, wall, 1000, wall, 0, 900, 1400},
+        //     {wall, wall, wall, wall, wall, wall, 0, 1000},
+        //     {1700, wall, wall, wall, wall, wall, wall, 0}};
+        W = {
+            {0, wall, 86, 15},
+            {wall, 0, 10, 53},
+            {86, 10, 0, 72},
+            {15, 53, 72, 0}};
     }
 
     ~ShortestPath()
     {
+    }
+
+    void update_matrix()
+    {
+        all_dijkstra();
+        transitive_closure();
     }
 
     void set_wall(int w)
@@ -245,16 +252,25 @@ public:
     void dynamic_programming()
     {
         for (int i = 0; i < n; i++)
+        {
             for (int j = 0; j < n; j++)
-                A[i][j] = W[i][j];
+            {
+                AA[i][j] = W[i][j];
+                EE[i][j] = i;
+            }
+            EE[i][i] = i;
+        }
         for (int k = 0; k < n; k++)
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < n; j++)
                 {
-                    if (i == j)
-                        continue;
-                    if ((A[i][k] + A[k][j]) < A[i][j])
-                        A[i][j] = A[i][k] + A[k][j];
+                    // if (i == j)
+                    //     continue;
+                    if ((AA[i][k] + AA[k][j]) < AA[i][j])
+                    {
+                        AA[i][j] = AA[i][k] + AA[k][j];
+                        EE[i][j] = k;
+                    }
                 }
     }
 
@@ -305,11 +321,29 @@ public:
         }
         cout << endl;
 
+        cout << "Distance Matrix (dp)" << endl;
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+                cout << AA[i][j] << "\t";
+            cout << endl;
+        }
+        cout << endl;
+
         cout << "Vertex Matrix" << endl;
         for (int i = 0; i < n; i++)
         {
             for (int j = 0; j < n; j++)
                 cout << E[i][j] << "\t";
+            cout << endl;
+        }
+        cout << endl;
+
+        cout << "Vertex Matrix (dp)" << endl;
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+                cout << EE[i][j] << "\t";
             cout << endl;
         }
         cout << endl;
@@ -325,11 +359,13 @@ public:
     }
 };
 
-// signed main()
-// {
-//     ShortestPath sp;
-//     sp.random_weight_matrix();
-//     sp.print();
-//     sp.set_threshold(150);
-//     sp.print();
-// }
+signed main()
+{
+    ShortestPath sp = ShortestPath(4);
+    // sp.random_weight_matrix();
+    sp.update_matrix();
+    sp.dynamic_programming();
+    sp.print();
+    // sp.set_threshold(150);
+    // sp.print();
+}

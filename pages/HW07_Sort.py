@@ -137,7 +137,7 @@ if button_run:
                 "value": "time (micro seconds)",
             },
         )
-        fig.update_xaxes(tickvals=df.index)
+        # fig.update_xaxes(tickvals=df.index)
 
         fig.update_layout(
             hovermode="x unified",

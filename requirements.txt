@@ -3,3 +3,4 @@ streamlit
 homework @ git+https://github.com/exkuretrol/data-structure@main
 rcviz @ git+https://github.com/carlsborg/rcviz@master
 matplotlib
+plotly

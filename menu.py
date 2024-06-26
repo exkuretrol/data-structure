@@ -84,7 +84,7 @@ def algorithm_menu():
     st.sidebar.page_link(
         page=construct_page_path("HW07_Sort.py"),
         label="HW 07 排序",
-        icon="🛣️",
+        icon="🪜",
     )
 
 

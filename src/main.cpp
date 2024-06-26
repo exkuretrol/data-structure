@@ -143,6 +143,6 @@ PYBIND11_MODULE(homework, m)
         .def("set_execution_times", &Sort::set_execution_times)
         .def("set_range", &Sort::set_range)
         .def("set_sort_alg_active_list", &Sort::set_sort_alg_active_list)
-        .def("execution_sort", &Sort::execution_sort)
+        .def("execution_sort", &Sort::execution_sort, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
         .def("get_time_it_table", &Sort::get_time_it_table);
 }

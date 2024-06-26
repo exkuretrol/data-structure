@@ -2,6 +2,8 @@
 #include <ctime>
 #include <functional>
 #include <vector>
+#include <algorithm>
+#include <chrono>
 
 #define ALGORITHM_KINDS 9
 
@@ -16,9 +18,10 @@ private:
     int n = 1000;
     int execution_times = 10;
     int range_lower = 0;
-    int range_upper = 10000;
-    int *arr;
-    int **time_it_table;
+    int range_upper = 1000000;
+    int *arr = nullptr;
+    int *arr_copy = nullptr;
+    int **time_it_table = nullptr;
     vector<int> sort_alg_active_list = vector<int>(ALGORITHM_KINDS, 1);
 
     void set_time_it_table()
@@ -33,325 +36,325 @@ private:
     // generate random array with n elements, each element is in the range [range_lower, range_upper]
     void generate_random_array()
     {
+        if (arr != nullptr)
+        {
+            delete[] arr;
+        }
+
         arr = new int[n * execution_times];
         for (int i = 0; i < n * execution_times; i++)
         {
             arr[i] = range_lower + (rand() % (range_upper - range_lower + 1));
         }
-
-        // Pre-warm the cache
-        volatile int temp;
-        for (int i = 0; i < n * execution_times; i++)
-        {
-            temp = arr[i];
-        }
     }
+
     // get sort algorithm by index
-    function<void(int)> get_sort_algorithm_by_index(int i)
+    void run_sort_algorithm_by_index(int i, int len_arr)
     {
         switch (i)
         {
         case 0:
-            return [this](int x)
-            { selection_sort(x); };
+            selection_sort(len_arr);
+            break;
         case 1:
-            return [this](int x)
-            { insertion_sort(x); };
+            insertion_sort(len_arr);
+            break;
         case 2:
-            return [this](int x)
-            { bubble_sort(x); };
+            bubble_sort(len_arr);
+            break;
         case 3:
-            return [this](int x)
-            { quick_sort_recursive_wrapper(x); };
+            quick_sort_recursive_wrapper(len_arr);
+            break;
         case 4:
-            return [this](int x)
-            { quick_sort_iterative(x); };
+            quick_sort_iterative(len_arr);
+            break;
         case 5:
-            return [this](int x)
-            { merge_sort_recursive_wrapper(x); };
+            merge_sort_recursive_wrapper(len_arr);
+            break;
         case 6:
-            return [this](int x)
-            { merge_sort_iterative(x); };
+            merge_sort_iterative(len_arr);
+            break;
         case 7:
-            return [this](int x)
-            { heap_sort(x); };
+            heap_sort(len_arr);
+            break;
         case 8:
-            return [this](int x)
-            { radix_sort(x); };
+            radix_sort(len_arr);
+            break;
         default:
-            return [this](int x)
-            { selection_sort(x); };
+            break;
         }
     }
 
     // # 0 : selection sort
-    // get an input index x, from x, generate start index with x *n, end index with(x + 1) * n void selection_sort(int x)
-    void selection_sort(int x)
+    // given array length len_arr, sort from index 0 to len_arr - 1
+    void selection_sort(int arr_len)
     {
-        for (int i = x * n; i < (x + 1) * n; i++)
+        for (int i = 0; i < arr_len - 1; i++)
         {
-            int min_index = i;
-            for (int j = i + 1; j < (x + 1) * n; j++)
+            int min_idx = i;
+            for (int j = i + 1; j < arr_len; j++)
             {
-                if (arr[j] < arr[min_index])
+                if (arr_copy[j] < arr_copy[min_idx])
                 {
-                    min_index = j;
+                    min_idx = j;
                 }
             }
-            swap(arr[i], arr[min_index]);
+            swap(arr_copy[i], arr_copy[min_idx]);
         }
     }
 
     // #1: insertion sort
-    void insertion_sort(int x)
+    void insertion_sort(int arr_len)
     {
-        for (int i = x * n + 1; i < (x + 1) * n; i++)
+        for (int i = 1; i < arr_len; i++)
         {
-            int key = arr[i];
+            int key = arr_copy[i];
             int j = i - 1;
-            while (j >= x * n && arr[j] > key)
+            while (j >= 0 && arr_copy[j] > key)
             {
-                arr[j + 1] = arr[j];
+                arr_copy[j + 1] = arr_copy[j];
                 j--;
             }
-            arr[j + 1] = key;
+            arr_copy[j + 1] = key;
         }
     }
 
     // #2: bubble sort
-    void bubble_sort(int x)
+    void bubble_sort(int arr_len)
     {
-        int lb = x * n;
-        int ub = (x + 1) * n - 1;
-        bool swapped;
-        for (int i = lb; i < ub; i++)
+        for (int i = 0; i < arr_len - 1; i++)
         {
-            swapped = false;
-            for (int j = lb; j < ub - (i - lb); j++)
+            for (int j = 0; j < arr_len - i - 1; j++)
             {
-                if (arr[j] > arr[j + 1])
+                if (arr_copy[j] > arr_copy[j + 1])
                 {
-                    swap(arr[j], arr[j + 1]);
-                    swapped = true;
+                    swap(arr_copy[j], arr_copy[j + 1]);
                 }
-            }
-            if (!swapped)
-            {
-                break;
             }
         }
     }
 
-    // // #3: quick sort (resursive)
-    void quick_sort_recursive_wrapper(int x)
+    // #3: quick sort (resursive)
+    void quick_sort_recursive_wrapper(int arr_len)
     {
-        quick_sort_recursive(x, x * n, (x + 1) * n - 1);
+        quick_sort_recursive(0, arr_len - 1);
     }
 
-    void quick_sort_recursive(int x, int low, int high)
+    void quick_sort_recursive(int low, int high)
     {
         if (low < high)
         {
-            int pi = this->partition(low, high, x);
-            quick_sort_recursive(x, low, pi - 1);
-            quick_sort_recursive(x, pi + 1, high);
+            int pi = partition(low, high);
+            quick_sort_recursive(low, pi - 1);
+            quick_sort_recursive(pi + 1, high);
         }
     }
 
-    int partition(int low, int high, int x)
+    int partition(int low, int high)
     {
-        int pivot = arr[high];
+        int pivot = arr_copy[high];
         int i = low - 1;
-        for (int j = low; j <= high - 1; j++)
+        for (int j = low; j < high; j++)
         {
-            if (arr[j] < pivot)
+            if (arr_copy[j] < pivot)
             {
                 i++;
-                swap(arr[i], arr[j]);
+                swap(arr_copy[i], arr_copy[j]);
             }
         }
-        swap(arr[i + 1], arr[high]);
+        swap(arr_copy[i + 1], arr_copy[high]);
         return i + 1;
     }
 
     // #4: quick sort (iterative)
-    void quick_sort_iterative(int x)
+    void quick_sort_iterative(int arr_len)
     {
-        int low = x * n;
-        int high = (x + 1) * n - 1;
-        int stack[high - low + 1];
-        int top = -1;
-        stack[++top] = low;
-        stack[++top] = high;
-        while (top >= 0)
+        int low = 0;
+        int high = arr_len - 1;
+        vector<int> stack;
+        stack.push_back(low);
+        stack.push_back(high);
+
+        while (!stack.empty())
         {
-            high = stack[top--];
-            low = stack[top--];
-            int pi = this->partition(low, high, x);
+            high = stack.back();
+            stack.pop_back();
+            low = stack.back();
+            stack.pop_back();
+
+            int pi = partition(low, high);
+
             if (pi - 1 > low)
             {
-                stack[++top] = low;
-                stack[++top] = pi - 1;
+                stack.push_back(low);
+                stack.push_back(pi - 1);
             }
+
             if (pi + 1 < high)
             {
-                stack[++top] = pi + 1;
-                stack[++top] = high;
+                stack.push_back(pi + 1);
+                stack.push_back(high);
             }
         }
     }
 
     // #5: merge sort (recursive)
-    void merge_sort_recursive_wrapper(int x)
+    void merge_sort_recursive_wrapper(int arr_len)
     {
-        merge_sort_recursive(x, x * n, (x + 1) * n - 1);
+        merge_sort_recursive(0, arr_len - 1);
     }
 
-    void merge_sort_recursive(int x, int low, int high)
+    void merge_sort_recursive(int low, int high)
     {
         if (low < high)
         {
             int mid = low + (high - low) / 2;
-            merge_sort_recursive(x, low, mid);
-            merge_sort_recursive(x, mid + 1, high);
-            merge(x, low, mid, high);
+            merge_sort_recursive(low, mid);
+            merge_sort_recursive(mid + 1, high);
+            merge(low, mid, high);
         }
     }
 
-    void merge(int x, int low, int mid, int high)
+    void merge(int low, int mid, int high)
     {
         int n1 = mid - low + 1;
         int n2 = high - mid;
-        int L[n1], R[n2];
+
+        int *L = new int[n1];
+        int *R = new int[n2];
+
         for (int i = 0; i < n1; i++)
         {
-            L[i] = arr[x * n + low + i];
+            L[i] = arr_copy[low + i];
         }
-        for (int j = 0; j < n2; j++)
+
+        for (int i = 0; i < n2; i++)
         {
-            R[j] = arr[x * n + mid + 1 + j];
+            R[i] = arr_copy[mid + 1 + i];
         }
+
         int i = 0, j = 0, k = low;
         while (i < n1 && j < n2)
         {
             if (L[i] <= R[j])
             {
-                arr[x * n + k] = L[i];
+                arr_copy[k] = L[i];
                 i++;
             }
             else
             {
-                arr[x * n + k] = R[j];
+                arr_copy[k] = R[j];
                 j++;
             }
             k++;
         }
+
         while (i < n1)
         {
-            arr[x * n + k] = L[i];
+            arr_copy[k] = L[i];
             i++;
             k++;
         }
+
         while (j < n2)
         {
-            arr[x * n + k] = R[j];
+            arr_copy[k] = R[j];
             j++;
             k++;
         }
+
+        delete[] L;
+        delete[] R;
     }
 
     // #6: merge sort (iterative)
-    void merge_sort_iterative(int x)
+    void merge_sort_iterative(int arr_len)
     {
-        for (int curr_size = 1; curr_size <= n - 1; curr_size = 2 * curr_size)
+        for (int curr_size = 1; curr_size <= arr_len - 1; curr_size = 2 * curr_size)
         {
-            for (int low = 0; low < n - 1; low += 2 * curr_size)
+            for (int left_start = 0; left_start < arr_len - 1; left_start += 2 * curr_size)
             {
-                int mid = min(low + curr_size - 1, n - 1);
-                int high = min(low + 2 * curr_size - 1, n - 1);
-                merge(x, low, mid, high);
+                int mid = min(left_start + curr_size - 1, arr_len - 1);
+                int right_end = min(left_start + 2 * curr_size - 1, arr_len - 1);
+                merge(left_start, mid, right_end);
             }
         }
     }
 
     // #7: heap sort
-    void heap_sort(int x)
+    void heap_sort(int arr_len)
     {
-        for (int i = n / 2 - 1; i >= 0; i--)
+        for (int i = arr_len / 2 - 1; i >= 0; i--)
         {
-            heapify(x, n, i);
+            heapify(arr_len, i);
         }
-        for (int i = n - 1; i > 0; i--)
+
+        for (int i = arr_len - 1; i > 0; i--)
         {
-            swap(arr[x * n], arr[x * n + i]);
-            heapify(x, i, 0);
+            swap(arr_copy[0], arr_copy[i]);
+            heapify(i, 0);
         }
     }
-
-    void heapify(int x, int n, int i)
+    void heapify(int arr_len, int i)
     {
         int largest = i;
-        int l = 2 * i + 1;
-        int r = 2 * i + 2;
-        if (l < n && arr[x * n + l] > arr[x * n + largest])
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
+
+        if (left < arr_len && arr_copy[left] > arr_copy[largest])
         {
-            largest = l;
+            largest = left;
         }
-        if (r < n && arr[x * n + r] > arr[x * n + largest])
+
+        if (right < arr_len && arr_copy[right] > arr_copy[largest])
         {
-            largest = r;
+            largest = right;
         }
+
         if (largest != i)
         {
-            swap(arr[x * n + i], arr[x * n + largest]);
-            heapify(x, n, largest);
+            swap(arr_copy[i], arr_copy[largest]);
+            heapify(arr_len, largest);
         }
     }
 
     // #8: radix sort
-    void radix_sort(int x)
+    void radix_sort(int arr_len)
     {
-        int m = get_max(x);
-        for (int exp = 1; m / exp > 0; exp *= 10)
+        int max_val = *max_element(arr_copy, arr_copy + arr_len);
+        for (int exp = 1; max_val / exp > 0; exp *= 10)
         {
-            count_sort(x, exp);
+            counting_sort(arr_len, exp);
         }
     }
 
-    int get_max(int x)
+    void counting_sort(int arr_len, int exp)
     {
-        int mx = arr[x * n];
-        for (int i = x * n + 1; i < (x + 1) * n; i++)
-        {
-            if (arr[i] > mx)
-            {
-                mx = arr[i];
-            }
-        }
-        return mx;
-    }
-
-    void count_sort(int x, int exp)
-    {
-        int output[n];
+        int *output = new int[arr_len];
         int count[10] = {0};
-        for (int i = x * n; i < (x + 1) * n; i++)
+
+        for (int i = 0; i < arr_len; i++)
         {
-            count[(arr[i] / exp) % 10]++;
+            count[(arr_copy[i] / exp) % 10]++;
         }
+
         for (int i = 1; i < 10; i++)
         {
             count[i] += count[i - 1];
         }
-        for (int i = (x + 1) * n - 1; i >= x * n; i--)
+
+        for (int i = arr_len - 1; i >= 0; i--)
         {
-            output[count[(arr[i] / exp) % 10] - 1] = arr[i];
-            count[(arr[i] / exp) % 10]--;
+            output[count[(arr_copy[i] / exp) % 10] - 1] = arr_copy[i];
+            count[(arr_copy[i] / exp) % 10]--;
         }
-        for (int i = x * n; i < (x + 1) * n; i++)
+
+        for (int i = 0; i < arr_len; i++)
         {
-            arr[i] = output[i - x * n];
+            arr_copy[i] = output[i];
         }
+
+        delete[] output;
     }
 
 public:
@@ -359,25 +362,34 @@ public:
     {
         srand(time(0));
         this->set_time_it_table();
-        this->generate_random_array();
     }
     ~Sort()
     {
         delete[] arr;
+        for (int i = 0; i < execution_times; i++)
+        {
+            delete[] time_it_table[i];
+        }
         delete[] time_it_table;
     }
 
     void set_n(int n)
     {
         this->n = n;
-        this->generate_random_array();
     }
 
     void set_execution_times(int times)
     {
+        if (time_it_table != nullptr)
+        {
+            for (int i = 0; i < execution_times; i++)
+            {
+                delete[] time_it_table[i];
+            }
+            delete[] time_it_table;
+        }
         this->execution_times = times;
-        this->generate_random_array();
-        this->set_time_it_table();
+        set_time_it_table();
     }
 
     void set_range(int lower_bount, int upper_bound)
@@ -396,7 +408,11 @@ public:
 
     void execution_sort()
     {
+        cout << "generating random array..." << endl;
+        this->generate_random_array();
         // empty the time_it_table
+
+        cout << "emptying time_it_table..." << endl;
         for (int i = 0; i < execution_times; i++)
         {
             for (int j = 0; j < ALGORITHM_KINDS; j++)
@@ -405,33 +421,48 @@ public:
             }
         }
 
-        int *arr_copy = new int[n * execution_times];
-        for (int j = 0; j < n * execution_times; j++)
-        {
-            arr_copy[j] = arr[j];
-        }
-
         for (int i = 0; i < ALGORITHM_KINDS; i++)
         {
-
             if (sort_alg_active_list[i] == 1)
             {
+                cout << "running sort algorithm ";
+                if (i == 0)
+                    cout << "selection sort" << endl;
+                else if (i == 1)
+                    cout << "insertion sort" << endl;
+                else if (i == 2)
+                    cout << "bubble sort" << endl;
+                else if (i == 3)
+                    cout << "quick sort (recursive)" << endl;
+                else if (i == 4)
+                    cout << "quick sort (iterative)" << endl;
+                else if (i == 5)
+                    cout << "merge sort (recursive)" << endl;
+                else if (i == 6)
+                    cout << "merge sort (iterative)" << endl;
+                else if (i == 7)
+                    cout << "heap sort" << endl;
+                else if (i == 8)
+                    cout << "radix sort" << endl;
                 for (int j = 0; j < execution_times; j++)
                 {
+                    int current_len = n * (j + 1);
+                    cout << "\tarray length: " << current_len << endl;
+                    arr_copy = new int[current_len];
+                    for (int j = 0; j < current_len; j++)
+                    {
+                        arr_copy[j] = arr[j];
+                    }
                     auto start = high_resolution_clock::now();
-                    get_sort_algorithm_by_index(i)(j);
+                    run_sort_algorithm_by_index(i, current_len);
                     auto end = high_resolution_clock::now();
+                    cout << "\t\texecution time: " << duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
                     double elapsed_time = duration_cast<chrono::microseconds>(end - start).count();
                     time_it_table[j][i] = elapsed_time;
+                    delete[] arr_copy;
                 }
             }
-
-            for (int j = 0; j < n * execution_times; j++)
-            {
-                arr[j] = arr_copy[j];
-            }
         }
-        delete[] arr_copy;
     }
 
     vector<vector<int>> get_time_it_table()
@@ -452,13 +483,20 @@ public:
 
 // int main()
 // {
-//     srand(time(0));
-//     Sort s = Sort(1000, 5);
+//     Sort s = Sort();
 //     s.execution_sort();
-//     s.print_time_it_table();
 
-//     cout << endl;
-//     s.execution_sort();
-//     s.print_time_it_table();
+//     vector<vector<int>>
+//         tbl = s.get_time_it_table();
+//     // output table
+//     for (int i = 0; i < tbl.size(); i++)
+//     {
+//         for (int j = 0; j < tbl[i].size(); j++)
+//         {
+//             cout << tbl[i][j] << " ";
+//         }
+//         cout << endl;
+//     }
+
 //     return 0;
 // }

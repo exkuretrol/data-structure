@@ -81,6 +81,11 @@ def algorithm_menu():
         label="HW 05 最短路徑",
         icon="🛣️",
     )
+    st.sidebar.page_link(
+        page=construct_page_path("HW07_Sort.py"),
+        label="HW 07 排序",
+        icon="🛣️",
+    )
 
 
 subject_options = {"data_structure": "資料結構", "algorithm": "演算法"}

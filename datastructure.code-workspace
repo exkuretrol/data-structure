@@ -80,7 +80,12 @@
             "stack": "cpp",
             "typeindex": "cpp",
             "unordered_set": "cpp",
-            "valarray": "cpp"
+            "valarray": "cpp",
+            "iterator": "cpp",
+            "memory": "cpp",
+            "numeric": "cpp",
+            "random": "cpp",
+            "functional": "cpp"
         },
 
         "editor.formatOnSave": true,

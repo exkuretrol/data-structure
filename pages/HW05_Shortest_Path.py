@@ -2,7 +2,7 @@ from typing import List, Union
 
 import pandas as pd
 import streamlit as st
-from homework import ShortestPath
+from homework import ShortestPath  # type: ignore
 
 import redirect as rd
 from menu import menu_with_redirect

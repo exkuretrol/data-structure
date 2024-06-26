@@ -15,7 +15,7 @@ ext_modules = [
 
 setup(
     name=package_name,
-    version="0.10.0",
+    version="0.10.6",
     ext_modules=ext_modules,
     # extras_require={"test": "pytest"},
     cmdclass={"build_ext": build_ext},

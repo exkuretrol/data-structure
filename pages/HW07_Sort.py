@@ -32,15 +32,18 @@ def set_attr(attr: str):
     attr_val = getattr(st.session_state, attr)
     set_attr = f"set_{attr}"
     setter = getattr(s, set_attr)
+    if isinstance(attr_val, int):
+        setter(attr_val)
+    elif isinstance(attr_val, tuple):
+        setter(*attr_val)
     print(f"set attribute {attr} to {attr_val}")
-    setter(attr_val)
 
 
 input_n = c1.number_input(
     label="n",
     key="n",
     min_value=10,
-    max_value=10**10,
+    max_value=10**6,
     value=1000,
     on_change=set_attr,
     kwargs={"attr": "n"},
@@ -50,10 +53,21 @@ input_times = c1.number_input(
     label="execution_times",
     key="execution_times",
     min_value=1,
-    max_value=10000,
+    max_value=1000,
     value=10,
     on_change=set_attr,
     kwargs={"attr": "execution_times"},
+)
+
+input_range = c1.slider(
+    label="range",
+    min_value=0,
+    max_value=10**7,
+    value=(0, 10**6),
+    step=1000,
+    key="range",
+    on_change=set_attr,
+    kwargs={"attr": "range"},
 )
 
 
@@ -91,6 +105,7 @@ button_run = c1.button("執行")
 sidebar_text_list.append(f"`n`：單次排序陣列長度。")
 sidebar_text_list.append(f"`execution_times`：排序執行次數。")
 sidebar_text_list.append(f"`algorithm_list`：排序演算法。")
+sidebar_text_list.append(f"`range`：陣列數字上下界。")
 
 
 def get_time_it_table() -> pd.DataFrame:

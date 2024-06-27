@@ -20,7 +20,7 @@ c1 = st.container(border=True)
 
 
 @st.cache_resource
-def init_sort(n: int, times: int):
+def init_sort(n: int, times: int) -> Sort:
     return Sort(n, times)
 
 
@@ -30,8 +30,8 @@ s = init_sort(1000, 10)
 def set_attr(attr: str):
     sleep(0.3)
     attr_val = getattr(st.session_state, attr)
-    set_attr = f"set_{attr}"
-    setter = getattr(s, set_attr)
+    set_attr_text = f"set_{attr}"
+    setter = getattr(s, set_attr_text)
     if isinstance(attr_val, int):
         setter(attr_val)
     elif isinstance(attr_val, tuple):
@@ -39,12 +39,31 @@ def set_attr(attr: str):
     print(f"set attribute {attr} to {attr_val}")
 
 
+def get_attr(attr: str):
+    get_attr_text = f"get_{attr}"
+    func = getattr(s, get_attr_text)
+    return func()
+
+
+if "init_vals" not in st.session_state:
+    d = dict()
+    d.update({"n": get_attr("n")})
+    d.update({"execution_times": get_attr("execution_times")})
+    d.update({"range": get_attr("range")})
+    s_l: List[int] = get_attr("sort_alg_active_list")
+    l = filter(
+        lambda x: x is not None, [i if j == 1 else None for i, j in enumerate(s_l)]
+    )
+    d.update({"algorithm_list": list(l)})
+    st.session_state.init_vals = d
+
+
 input_n = c1.number_input(
     label="n",
     key="n",
     min_value=10,
     max_value=10**6,
-    value=1000,
+    value=st.session_state.init_vals.get("n") or 1000,
     on_change=set_attr,
     kwargs={"attr": "n"},
 )
@@ -54,7 +73,7 @@ input_times = c1.number_input(
     key="execution_times",
     min_value=1,
     max_value=1000,
-    value=10,
+    value=st.session_state.init_vals.get("execution_times") or 10,
     on_change=set_attr,
     kwargs={"attr": "execution_times"},
 )
@@ -63,7 +82,7 @@ input_range = c1.slider(
     label="range",
     min_value=0,
     max_value=10**7,
-    value=(0, 10**6),
+    value=st.session_state.init_vals.get("range") or (0, 1000000),
     step=1000,
     key="range",
     on_change=set_attr,
@@ -98,7 +117,8 @@ input_algorithm_list = c1.multiselect(
     key="algorithm_list",
     options=list(algorithm_dict.keys()),
     format_func=lambda x: algorithm_dict.get(x),
-    default=list(algorithm_dict.keys()),
+    default=st.session_state.init_vals.get("algorithm_list")
+    or list(algorithm_dict.keys()),
     on_change=set_algorithm_list,
 )
 button_run = c1.button("執行")

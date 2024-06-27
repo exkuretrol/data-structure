@@ -140,9 +140,13 @@ PYBIND11_MODULE(homework, m)
     py::class_<Sort>(m, "Sort")
         .def(py::init<int, int>(), py::arg("n") = 1000, py::arg("times") = 10)
         .def("set_n", &Sort::set_n)
+        .def("get_n", &Sort::get_n)
         .def("set_execution_times", &Sort::set_execution_times)
+        .def("get_execution_times", &Sort::get_execution_times)
         .def("set_range", &Sort::set_range)
+        .def("get_range", &Sort::get_range)
         .def("set_sort_alg_active_list", &Sort::set_sort_alg_active_list)
+        .def("get_sort_alg_active_list", &Sort::get_sort_alg_active_list)
         .def("execution_sort", &Sort::execution_sort, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
         .def("get_time_it_table", &Sort::get_time_it_table);
 }

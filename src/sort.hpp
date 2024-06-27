@@ -378,6 +378,11 @@ public:
         this->n = n;
     }
 
+    int get_n()
+    {
+        return n;
+    }
+
     void set_execution_times(int times)
     {
         if (time_it_table != nullptr)
@@ -392,10 +397,20 @@ public:
         set_time_it_table();
     }
 
+    int get_execution_times()
+    {
+        return execution_times;
+    }
+
     void set_range(int lower_bount, int upper_bound)
     {
         this->range_lower = lower_bount;
         this->range_upper = upper_bound;
+    }
+
+    tuple<int, int> get_range()
+    {
+        return make_tuple(range_lower, range_upper);
     }
 
     void set_sort_alg_active_list(vector<int> alg_list)
@@ -404,6 +419,11 @@ public:
         {
             sort_alg_active_list[i] = alg_list[i];
         }
+    }
+
+    vector<int> get_sort_alg_active_list()
+    {
+        return sort_alg_active_list;
     }
 
     void execution_sort()
